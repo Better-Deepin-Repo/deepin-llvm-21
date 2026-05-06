@@ -59,6 +59,8 @@ enable_feature("libc++", "@ENABLE_LIBCXX@")
 enable_feature("static-libc++", "@ENABLE_STATIC_LIBCXX@")
 enable_feature("libunwind", "@ENABLE_LIBUNWIND@")
 enable_feature("support_hwasan", "@ENABLE_HWASAN@")
+enable_feature("float16", "@ENABLE_FLOAT16@")
+enable_feature("gold", "@ENABLE_GOLD_TESTS@")
 
 def getLLVMMajorVersion():
     out = subprocess.run(["llvm-config", "--version"], capture_output=True)
@@ -71,3 +73,8 @@ def getLLVMMajorVersion():
 
 if "s390x" == "@CMAKE_HOST_SYSTEM_PROCESSOR@" and getLLVMMajorVersion() < 21:
    config.available_features.add("availability-compiler-rt-builtins-missing")
+
+# This is necessary because LLVM 20 and earlier versions do build libunwind
+# on s390x even though the library is broken.
+if "s390x" == "@CMAKE_HOST_SYSTEM_PROCESSOR@" and getLLVMMajorVersion() < 22:
+   config.available_features.add("availability-libunwind-missing")

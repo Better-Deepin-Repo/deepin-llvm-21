@@ -7909,8 +7909,9 @@ static bool checkBitCastConstexprEligibilityType(SourceLocation Loc,
       // so its layout is unspecified. For now, we'll simply treat these cases
       // as unsupported (this should only be possible with OpenCL bool vectors
       // whose element count isn't a multiple of the byte size).
-      Info->FFDiag(Loc, diag::note_constexpr_bit_cast_invalid_vector)
-          << QualType(VTy, 0) << EltSize << NElts << Ctx.getCharWidth();
+      if (Info)
+        Info->FFDiag(Loc, diag::note_constexpr_bit_cast_invalid_vector)
+            << QualType(VTy, 0) << EltSize << NElts << Ctx.getCharWidth();
       return false;
     }
 
@@ -7919,8 +7920,9 @@ static bool checkBitCastConstexprEligibilityType(SourceLocation Loc,
       // The layout for x86_fp80 vectors seems to be handled very inconsistently
       // by both clang and LLVM, so for now we won't allow bit_casts involving
       // it in a constexpr context.
-      Info->FFDiag(Loc, diag::note_constexpr_bit_cast_unsupported_type)
-          << EltTy;
+      if (Info)
+        Info->FFDiag(Loc, diag::note_constexpr_bit_cast_unsupported_type)
+            << EltTy;
       return false;
     }
   }
@@ -10932,10 +10934,6 @@ bool RecordExprEvaluator::VisitCXXConstructExpr(const CXXConstructExpr *E,
 
   bool ZeroInit = E->requiresZeroInitialization();
   if (CheckTrivialDefaultConstructor(Info, E->getExprLoc(), FD, ZeroInit)) {
-    // If we've already performed zero-initialization, we're already done.
-    if (Result.hasValue())
-      return true;
-
     if (ZeroInit)
       return ZeroInitialization(E, T);
 

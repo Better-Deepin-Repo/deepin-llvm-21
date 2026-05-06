@@ -80,7 +80,7 @@ For a stable release, the syntax is:
 Additional maintainer scripts
 =============================
 
-The script qualify-clang.sh that is found at the git debian/ directory
+The script debian-llvm-testsuite.bats that is found at the git debian/ directory
 should be used to quickly test a newly built package. It runs a short
 set of sanity-check tests and regression tests.
 It is executed in autopkgtest.
@@ -98,20 +98,12 @@ version (example: 8), then, change branch (example: 9) and
 $ git merge origin/8
 to retrieve the changes
 
-
-Change in major upstream version
-================================
-TODO update with the git commands
-
-$ svn copy snapshot VERSION
-$ svn commit -m "VERSION branched" VERSION
-$ cd VERSION
-$ sed -i -e '0,/llvm-toolchain-snapshot/s/llvm-toolchain-snapshot/llvm-toolchain-VERSION/' debian/changelog debian/control
-$ svn commit -m "snapshot => VERSION"
-$ cd ../snapshot
-$ emacs debian/prepare-new-release.sh
-# Change the version
-$ bash debian/prepare-new-release.sh
-$ svn commit -m "new snapshot release"
-
-Now, try build build it.
+ABI Stability
+=============
+Prior to LLVM 21, in debian the various libc++ packages included
+major versions in the names (eg, libc++1-19). After LLVM 21, the
+major version was dropped from the name in order to make it easier
+for packages to depend upon the shared library packages. The three
+renamed packages are libc++1, libc++abi1, and libunwind1. We are
+guaranteed ABI stability in those libraries, as documented in
+https://github.com/llvm/llvm-project/blob/main/libcxx/docs/ABIGuarantees.rst

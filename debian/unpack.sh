@@ -1,3 +1,4 @@
+#!/bin/sh
 set -e
 ORIG_VERSION=21
 MAJOR_VERSION=21 # 8.0.1

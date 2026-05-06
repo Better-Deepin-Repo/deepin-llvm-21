@@ -1,9 +1,9 @@
-usr/lib/llvm-@LLVM_VERSION@/include/mlir-c/
-usr/lib/llvm-@LLVM_VERSION@/include/mlir/
-usr/lib/llvm-@LLVM_VERSION@/lib/cmake/mlir/
+@LLVM_DIR@/include/mlir-c/
+@LLVM_DIR@/include/mlir/
+@LLVM_LIBDIR@/cmake/mlir/
 
-usr/lib/llvm-@LLVM_VERSION@/lib/libMLIR.so
-usr/lib/llvm-@LLVM_VERSION@/lib/libMLIR*.a
-usr/lib/llvm-@LLVM_VERSION@/lib/libmlir*.so
-#usr/lib/llvm-@LLVM_VERSION@/lib/libmlir_*.a
-usr/lib/llvm-@LLVM_VERSION@/lib/libMLIRExecutionEngineShared.so
+@LLVM_LIBDIR@/libMLIR.so
+@LLVM_LIBDIR@/libMLIR*.a
+@LLVM_LIBDIR@/libmlir*.so
+#@LLVM_LIBDIR@/libmlir_*.a
+@LLVM_LIBDIR@/libMLIRExecutionEngineShared.so

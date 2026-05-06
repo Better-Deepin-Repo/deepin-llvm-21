@@ -547,15 +547,22 @@ const char *tools::getLDMOption(const llvm::Triple &T, const ArgList &Args) {
   case llvm::Triple::aarch64:
     if (T.isOSManagarm())
       return "aarch64managarm";
+    else if (aarch64::isAArch64BareMetal(T))
+      return "aarch64elf";
     return "aarch64linux";
   case llvm::Triple::aarch64_be:
+    if (aarch64::isAArch64BareMetal(T))
+      return "aarch64elfb";
     return "aarch64linuxb";
   case llvm::Triple::arm:
   case llvm::Triple::thumb:
   case llvm::Triple::armeb:
-  case llvm::Triple::thumbeb:
-    return tools::arm::isARMBigEndian(T, Args) ? "armelfb_linux_eabi"
-                                               : "armelf_linux_eabi";
+  case llvm::Triple::thumbeb: {
+    bool IsBigEndian = tools::arm::isARMBigEndian(T, Args);
+    if (arm::isARMEABIBareMetal(T))
+      return IsBigEndian ? "armelfb" : "armelf";
+    return IsBigEndian ? "armelfb_linux_eabi" : "armelf_linux_eabi";
+  }
   case llvm::Triple::m68k:
     return "m68kelf";
   case llvm::Triple::ppc:
@@ -3258,14 +3265,8 @@ void tools::handleVectorizeSLPArgs(const ArgList &Args,
 
 void tools::handleInterchangeLoopsArgs(const ArgList &Args,
                                        ArgStringList &CmdArgs) {
-  // FIXME: instead of relying on shouldEnableVectorizerAtOLevel, we may want to
-  // implement a separate function to infer loop interchange from opt level.
-  // For now, enable loop-interchange at the same opt levels as loop-vectorize.
-  bool EnableInterchange = shouldEnableVectorizerAtOLevel(Args, false);
-  OptSpecifier InterchangeAliasOption =
-      EnableInterchange ? options::OPT_O_Group : options::OPT_floop_interchange;
-  if (Args.hasFlag(options::OPT_floop_interchange, InterchangeAliasOption,
-                   options::OPT_fno_loop_interchange, EnableInterchange))
+  if (Args.hasFlag(options::OPT_floop_interchange,
+                   options::OPT_fno_loop_interchange, false))
     CmdArgs.push_back("-floop-interchange");
 }
 

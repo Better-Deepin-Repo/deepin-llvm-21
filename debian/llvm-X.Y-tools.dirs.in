@@ -1,2 +1,2 @@
-/usr/lib/llvm-@LLVM_VERSION@/build/unittests
-/usr/lib/llvm-@LLVM_VERSION@/build/utils/lit/
+/@LLVM_DIR@/build/unittests
+/@LLVM_DIR@/utils/lit/

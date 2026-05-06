@@ -57,6 +57,7 @@ option(ENABLE_COMPILER_RT "assume compiler-rt is available" ON)
 option(ENABLE_LIBCXX "assume libc++ is available" ON)
 option(ENABLE_STATIC_LIBCXX "assume libc++.a is available" ON)
 option(ENABLE_LIBUNWIND "assume libunwind is available" ON)
+option(ENABLE_GOLD_TESTS "enable tests that require gold linker" ON)
 
 # Detect if libomp is supported. Ubuntu stores the symlink library under a
 # version-dependent directory so we need to provide a hint to CMake to find it.
@@ -80,6 +81,16 @@ option(ENABLE_HWASAN
     "The host supports Aarch64 tagged address ABI"
     ${SUPPORT_HWASAN}
     )
+
+# Check for _Float16 support
+if (CLANGXX_BINARY)
+    message(STATUS "Checking for _Float16 support in ${CLANGXX_BINARY}")
+    execute_process(COMMAND ${CLANGXX_BINARY} -c ${CMAKE_CURRENT_SOURCE_DIR}/tests/float16.cpp RESULT_VARIABLE FLOAT16_STATUS ERROR_QUIET OUTPUT_QUIET)
+    if (${FLOAT16_STATUS} EQUAL 0)
+	message(STATUS "_Float16 enabled.")
+	set(ENABLE_FLOAT16 ON)
+    endif()
+endif()
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/lit.site.cfg.in
