@@ -76,7 +76,7 @@ sub silent_system {
 
 sub DetermineClang {
   my ($is_cxx) = @_;
-  my $default = $is_cxx ? 'clang++' : 'clang';
+  my $default = $is_cxx ? 'clang++-21' : 'clang-21';
   my $opt = $ENV{$is_cxx ? 'CLANG_CXX' : 'CLANG'};
   return defined $opt ? $opt : $default;
 }

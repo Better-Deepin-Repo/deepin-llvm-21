@@ -223,6 +223,7 @@ if(MSVC)
 endif()
 
 include_directories(..)
+include_directories(${LLVM_INCLUDE_DIR})
 
 set(SANITIZER_COMMON_DEFINITIONS
   HAVE_RPC_XDR_H=${HAVE_RPC_XDR_H})

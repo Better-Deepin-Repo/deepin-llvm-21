@@ -3471,7 +3471,8 @@ def SigLongJmp : GNULibBuiltin<"setjmp.h"> {
 
 // non-standard but very common
 
-def StrlCpy : GNULibBuiltin<"string.h"> {
+/*
+  def StrlCpy : GNULibBuiltin<"string.h"> {
   let Spellings = ["strlcpy"];
   let Prototype = "size_t(char*, char const*, size_t)";
 }
@@ -3480,6 +3481,7 @@ def StrlCat : GNULibBuiltin<"string.h"> {
   let Spellings = ["strlcat"];
   let Prototype = "size_t(char*, char const*, size_t)";
 }
+*/
 
 def ObjcMsgSend : ObjCLibBuiltin<"objc_message.h"> {
   let Spellings = ["objc_msgSend"];

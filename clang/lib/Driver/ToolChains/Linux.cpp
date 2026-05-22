@@ -12,6 +12,7 @@
 #include "Arch/Mips.h"
 #include "Arch/PPC.h"
 #include "Arch/RISCV.h"
+#include "clang/Basic/Version.h"
 #include "clang/Config/config.h"
 #include "clang/Driver/CommonArgs.h"
 #include "clang/Driver/Distro.h"
@@ -308,6 +309,21 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
   ExtraOpts.push_back("--build-id");
 #endif
 
+  if (Distro.IsDebian() && Distro >= Distro::DebianTrixie
+      || Distro.IsUbuntu() && Distro >= Distro::UbuntuNoble)
+  {
+    const char *pkg_metadata = getenv ("ELF_PACKAGE_METADATA");
+    const char *no_pkg_metadata = getenv ("NO_PKG_METADATA");
+
+    if (no_pkg_metadata) {
+      // don't issue --package-metadata option
+    } else if (!pkg_metadata) {
+      // no environment set for package metadata
+    } else {
+      ExtraOpts.push_back(std::string("--package-metadata=") + pkg_metadata);
+    }
+  }
+
   // The selection of paths to try here is designed to match the patterns which
   // the GCC driver itself uses, as this is part of the GCC-compatible driver.
   // This was determined by running GCC in a fake filesystem, creating all
@@ -350,6 +366,13 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
   }
 
   Generic_GCC::AddMultiarchPaths(D, SysRoot, OSLibDir, Paths);
+
+  // The deprecated -DLLVM_ENABLE_PROJECTS=libcxx configuration installs
+  // libc++.so in D.Dir+"/../lib/". Detect this path.
+  // TODO Remove once LLVM_ENABLE_PROJECTS=libcxx is unsupported.
+  if (StringRef(D.Dir).starts_with(SysRoot) &&
+      D.getVFS().exists(D.Dir + "/../lib/libc++.so"))
+    addPathIfExists(D, D.Dir + "/../lib", Paths);
 
   addPathIfExists(D, concat(SysRoot, "/lib"), Paths);
   addPathIfExists(D, concat(SysRoot, "/usr/lib"), Paths);
@@ -639,8 +662,18 @@ void Linux::AddClangSystemIncludeArgs(const ArgList &DriverArgs,
   SmallString<128> ResourceDirInclude(D.ResourceDir);
   llvm::sys::path::append(ResourceDirInclude, "include");
   if (!DriverArgs.hasArg(options::OPT_nobuiltininc) &&
-      (!getTriple().isMusl() || DriverArgs.hasArg(options::OPT_nostdlibinc)))
-    addSystemInclude(DriverArgs, CC1Args, ResourceDirInclude);
+      (!getTriple().isMusl() || DriverArgs.hasArg(options::OPT_nostdlibinc))) {
+      if (llvm::sys::fs::exists(ResourceDirInclude)) {
+          /* Include the build include directory only
+           * Otherwise, it fails with stage2 when clang headers are available on the system
+           * they usually fail because of the include_next. Two llvm/clang headers are found
+           * while we are waiting for the lib C++ (std or not)
+           */
+          addSystemInclude(DriverArgs, CC1Args, ResourceDirInclude);
+      } else {
+          addSystemInclude(DriverArgs, CC1Args, "/usr/include/clang/" + std::string(CLANG_VERSION_STRING) + "/include/");
+      }
+  }
 
   if (DriverArgs.hasArg(options::OPT_nostdlibinc))
     return;

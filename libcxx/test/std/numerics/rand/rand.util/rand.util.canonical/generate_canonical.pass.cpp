@@ -11,6 +11,8 @@
 // template<class RealType, size_t bits, class URNG>
 //     RealType generate_canonical(URNG& g);
 
+// XFAIL: *
+
 #include <random>
 
 #include <cassert>

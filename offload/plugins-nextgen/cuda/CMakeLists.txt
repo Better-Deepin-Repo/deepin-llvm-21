@@ -26,3 +26,5 @@ else()
   message(STATUS "Not generating NVIDIA tests, no supported devices detected."
                    " Use 'LIBOMPTARGET_FORCE_NVIDIA_TESTS' to override.")
 endif()
+
+add_runtimes_build_depends_if_needed(omptarget.rtl.cuda)

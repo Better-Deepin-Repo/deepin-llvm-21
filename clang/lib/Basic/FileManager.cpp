@@ -597,6 +597,12 @@ FileManager::getNoncachedStatValue(StringRef Path,
   return std::error_code();
 }
 
+// For GNU Hurd
+#if defined(__GNU__) && !defined(PATH_MAX)
+# define PATH_MAX 4096
+#endif
+
+
 void FileManager::GetUniqueIDMapping(
     SmallVectorImpl<OptionalFileEntryRef> &UIDToFiles) const {
   UIDToFiles.clear();

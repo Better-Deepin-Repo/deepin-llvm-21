@@ -350,7 +350,9 @@ public:
         HasMSA = true;
       else if (Feature == "+nomadd4")
         DisableMadd4 = true;
-      else if (Feature == "+fp64") {
+      else if (Feature == "-nomadd4")
+        DisableMadd4 = false;
+	  else if (Feature == "+fp64") {
         FPMode = FP64;
         FpGiven = true;
       } else if (Feature == "-fp64") {

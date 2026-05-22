@@ -741,9 +741,9 @@ void GenericTaintChecker::initTaintRules(CheckerContext &C) const {
        TR::Prop({{1, 2}}, {{0, ReturnValueIndex}})},
       {{CDM::CLibraryMaybeHardened, {"strncat"}},
        TR::Prop({{0, 1, 2}}, {{0, ReturnValueIndex}})},
-      {{CDM::CLibraryMaybeHardened, {"strlcpy"}}, TR::Prop({{1, 2}}, {{0}})},
+/*      {{CDM::CLibraryMaybeHardened, {"strlcpy"}}, TR::Prop({{1, 2}}, {{0}})},
       {{CDM::CLibraryMaybeHardened, {"strlcat"}}, TR::Prop({{0, 1, 2}}, {{0}})},
-
+*/
       // Usually the matching mode `CDM::CLibraryMaybeHardened` is sufficient
       // for unified handling of a function `FOO()` and its hardened variant
       // `__FOO_chk()`, but in the "sprintf" family the extra parameters of the

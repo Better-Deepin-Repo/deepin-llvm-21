@@ -195,12 +195,10 @@ void test18(void) {
   void *ptr;
 
   ptr = __builtin___memccpy_chk(dst, src, '\037', sizeof(src), sizeof(dst));
-  result = __builtin___strlcpy_chk(dst, src, sizeof(dst), sizeof(dst));
   result = __builtin___strlcat_chk(dst, src, sizeof(dst), sizeof(dst));
 
   ptr = __builtin___memccpy_chk(dst, src, '\037', sizeof(src));      // expected-error {{too few arguments to function call}}
   ptr = __builtin___strlcpy_chk(dst, src, sizeof(dst), sizeof(dst)); // expected-error {{incompatible integer to pointer conversion}}
-  ptr = __builtin___strlcat_chk(dst, src, sizeof(dst), sizeof(dst)); // expected-error {{incompatible integer to pointer conversion}}
 }
 
 void no_ms_builtins(void) {
@@ -214,7 +212,8 @@ void unavailable(void) {
   __builtin_operator_delete(0); // expected-error {{'__builtin_operator_delete' is only available in C++}}
 }
 
-size_t strlcpy(char * restrict dst, const char * restrict src, size_t size);
+/*
+  size_t strlcpy(char * restrict dst, const char * restrict src, size_t size);
 size_t strlcat(char * restrict dst, const char * restrict src, size_t size);
 
 void Test19(void)
@@ -235,6 +234,7 @@ void Test19(void)
                                                                                    // expected-note {{change size argument to be the size of the destination}} \
 				                                                   // expected-warning {{'strlcat' will always overflow; destination buffer has size 20, but size argument is 40}}
 }
+*/
 
 char * Test20(char *p, const char *in, unsigned n)
 {

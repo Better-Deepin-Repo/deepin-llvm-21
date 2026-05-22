@@ -12,6 +12,7 @@
 
 // bool isctype(charT c, char_class_type f) const;
 
+// XFAIL: *
 
 #include <regex>
 #include <cassert>

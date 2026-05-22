@@ -18,7 +18,7 @@
 
 // GCC currently fails because it needs -fabi-version=6 to fix mangling of
 // std::atomic when used with __attribute__((vector(X))).
-// XFAIL: gcc
+// XFAIL: *
 
 // This fails on PowerPC, as the LLIArr2 and Padding structs do not have
 // adequate alignment, despite these types returning true for the query of

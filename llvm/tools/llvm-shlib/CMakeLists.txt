@@ -50,6 +50,8 @@ if(LLVM_BUILD_LLVM_DYLIB)
     target_link_options(LLVM PRIVATE LINKER:--export-all-symbols)
   endif()
 
+  set_property(TARGET LLVM PROPERTY VERSION "1") # Append .1 to SONAME
+
   list(REMOVE_DUPLICATES LIB_NAMES)
   if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
     set(LIB_NAMES -Wl,-all_load ${LIB_NAMES})

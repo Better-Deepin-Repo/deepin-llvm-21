@@ -15,6 +15,9 @@ if(LIBOMP_OMPT_SUPPORT AND LIBOMP_ARCHER_SUPPORT)
   target_link_libraries(archer ${CMAKE_DL_LIBS})
   add_library(archer_static STATIC ompt-tsan.cpp)
 
+  add_runtimes_build_depends_if_needed(archer)
+  add_runtimes_build_depends_if_needed(archer_static)
+
   install(TARGETS archer archer_static
     LIBRARY DESTINATION ${OPENMP_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${OPENMP_INSTALL_LIBDIR})

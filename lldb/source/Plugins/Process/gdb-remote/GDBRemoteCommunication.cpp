@@ -27,6 +27,7 @@
 #include "llvm/Config/llvm-config.h" // for LLVM_ENABLE_ZLIB
 #include "llvm/Support/Error.h"
 #include "llvm/Support/ScopedPrinter.h"
+#include "llvm/Config/llvm-config.h"
 #include <climits>
 #include <cstring>
 #include <sys/stat.h>

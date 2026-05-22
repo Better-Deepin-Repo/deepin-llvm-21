@@ -190,6 +190,10 @@ target_compile_definitions( prepare_builtins PRIVATE ${LLVM_VERSION_DEFINE} )
 # These were not properly reported in early LLVM and we don't need them
 target_compile_options( prepare_builtins PRIVATE -fno-rtti -fno-exceptions )
 
+set_target_properties( prepare_builtins
+                       PROPERTIES INSTALL_RPATH "${LLVM_LIBDIR}"
+                       BUILD_WITH_INSTALL_RPATH "ON")
+
 # Setup arch devices
 set( r600--_devices cedar cypress barts cayman )
 set( amdgcn--_devices tahiti )

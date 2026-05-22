@@ -34,6 +34,11 @@
 #  include "sanitizer_symbolizer_libbacktrace.h"
 #  include "sanitizer_symbolizer_mac.h"
 
+#include "llvm/Config/llvm-config.h" // for LLVM_VERSION_MAJOR
+
+#define TOSTR2(X) #X
+#define TOSTR(X) TOSTR2(X)
+
 // C++ demangling function, as required by Itanium C++ ABI. This is weak,
 // because we do not require a C++ ABI library to be linked to a program
 // using sanitizers; if it's not present, we'll just use the mangled name.
@@ -461,7 +466,7 @@ static SymbolizerTool *ChooseExternalSymbolizer(LowLevelAllocator *allocator) {
     return new (*allocator) AtosSymbolizer(found_path, allocator);
   }
 #    endif  // SANITIZER_APPLE
-  if (const char *found_path = FindPathToBinary("llvm-symbolizer")) {
+  if (const char *found_path = "/usr/bin/llvm-symbolizer-" TOSTR(LLVM_VERSION_MAJOR)) {
     VReport(2, "Using llvm-symbolizer found at: %s\n", found_path);
     return new (*allocator) LLVMSymbolizer(found_path, allocator);
   }

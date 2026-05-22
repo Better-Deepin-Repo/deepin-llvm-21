@@ -822,7 +822,7 @@ DH_OPTIONS = python3
 OCAML_ENABLE = no
 OCAML_ARCHS = amd64 arm64 ppc64el riscv64 s390x
 OCAML_RELEASES = stretch buster bullseye bookworm trixie forky \
-	precise trusty xenial bionic focal jammy noble plucky questing resolute
+	precise trusty xenial bionic focal jammy noble plucky questing resolute crimson
 ifneq (,$(filter $(DISTRO), $(OCAML_RELEASES)))
   ifneq (,$(filter $(DEB_HOST_ARCH),$(OCAML_ARCHS)))
   # Enable OCAML for this arch.
@@ -1544,7 +1544,6 @@ endif
 endif
 
 override_dh_auto_install:
-mkdir -p $(TARGET_BUILD)/tools/clang/stage2-bins/docs/ocamldoc/html/
 ifeq ($(SMALL_DISK),yes)
 	# Clean up temporary files to make sure the install works
 	rm -rf $(find $(TARGET_BUILD) -wholename '*CMakeFiles*' -not -name CMakeLists.txt -a -name "*.dir" -type d)

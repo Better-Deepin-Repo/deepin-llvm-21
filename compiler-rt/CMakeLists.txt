@@ -309,6 +309,12 @@ option(COMPILER_RT_USE_ATOMIC_LIBRARY "Use compiler-rt atomic instead of libatom
 
 include(config-ix)
 
+option(COMPILER_RT_BUILD_SCUDO_STANDALONE
+  "override whether or not to build scudo standalone" ON)
+if(NOT COMPILER_RT_BUILD_SCUDO_STANDALONE)
+  set(COMPILER_RT_HAS_SCUDO_STANDALONE FALSE)
+endif()
+
 #================================
 # Setup Compiler Flags
 #================================

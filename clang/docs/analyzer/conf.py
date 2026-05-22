@@ -118,7 +118,10 @@ html_theme = "haiku"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+html_static_path = ['_static']
+
+# Use Debian-provided MathJax
+mathjax_path = '/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

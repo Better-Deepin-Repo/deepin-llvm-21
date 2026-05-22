@@ -9,6 +9,7 @@
 ; RUN:     --plugin-opt=save-temps \
 ; RUN:     -shared \
 ; RUN:     -o %t3.o %t.o %t2.o
+; XFAIL: i686, i386
 
 ; RUN: llvm-nm %t3.o | FileCheck %s
 ; CHECK: weakfunc

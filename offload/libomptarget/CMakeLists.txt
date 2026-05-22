@@ -40,6 +40,9 @@ add_llvm_library(omptarget
   NO_INSTALL_RPATH
   BUILDTREE_ONLY
 )
+
+add_runtimes_build_depends_if_needed(omptarget)
+
 target_include_directories(omptarget PRIVATE
   ${LIBOMPTARGET_INCLUDE_DIR} ${LIBOMPTARGET_BINARY_INCLUDE_DIR}
 )

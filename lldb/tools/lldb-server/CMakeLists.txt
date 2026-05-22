@@ -71,3 +71,7 @@ add_dependencies(lldb-server
 )
 target_include_directories(lldb-server PRIVATE "${LLDB_SOURCE_DIR}/source")
 target_link_libraries(lldb-server PRIVATE ${LLDB_SYSTEM_LIBS})
+
+install(TARGETS lldb-server
+  RUNTIME DESTINATION bin)
+

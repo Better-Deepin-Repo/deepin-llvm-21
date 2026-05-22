@@ -6,3 +6,6 @@ add_lldb_tool(lldb-argdumper ADD_TO_FRAMEWORK
 )
 
 add_dependencies(liblldb lldb-argdumper)
+
+install(TARGETS lldb-argdumper
+  RUNTIME DESTINATION bin)

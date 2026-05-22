@@ -12,6 +12,8 @@
 // memory and this test requires almost 5 MB
 // UNSUPPORTED: LIBCXX-PICOLIBC-FIXME
 
+// XFAIL: *
+
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>

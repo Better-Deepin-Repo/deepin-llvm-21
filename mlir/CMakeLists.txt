@@ -110,6 +110,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   endif()
 endif()
 
+check_symbol_exists(__mips "" __MIPS)
+append_if(__MIPS "-mxgot" CMAKE_C_FLAGS)
+append_if(__MIPS "-mxgot" CMAKE_CXX_FLAGS)
+
 # Installing the headers and docs needs to depend on generating any public
 # tablegen'd targets.
 # mlir-generic-headers are dialect-independent.

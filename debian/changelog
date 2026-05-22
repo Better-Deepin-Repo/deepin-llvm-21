@@ -33,15 +33,6 @@ llvm-toolchain-21 (1:21.1.8-4) unstable; urgency=medium
 
   [ Sylvestre Ledru ]
   * Fix autopkgtest failure with CMake 4. thanks to Adrian Bunk
-  [ Matthias Klose ]
-  * d/rules: Fix self-referencing macro.
-  * Stop building packages now built by LLVM 22.
-  * d/rules: Don't use lld for backport build, when not available.
-  * d/rules: Add safety check for enablement of the RVA23 baseline.
-
-  [ Sylvestre Ledru ]
-  * Fix autopkgtest failure with CMake 4. thanks to Adrian Bunk
-  * lldb: support global config file, thanks to Nobert Lange
 
  -- Matthias Klose <doko@debian.org>  Fri, 27 Feb 2026 17:29:38 +0100
 

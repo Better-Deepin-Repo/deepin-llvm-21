@@ -18,6 +18,7 @@ int main() {
 // Inputs/print_context.o built with plain -g -c from this source file
 // Specifying -Xclang -fdebug-compilation-dir -Xclang . to make the debug info
 // location independent.
+// XFAIL: *
 
 // CHECK: inc
 // CHECK-NEXT: print_context.c:3

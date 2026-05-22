@@ -6,7 +6,7 @@
  *
 \*===----------------------------------------------------------------------===*/
 
-#ifndef __CLANG_INTTYPES_H
+#if !defined(__CLANG_INTTYPES_H) || !defined(_INTTYPES_H)
 // AIX system headers need inttypes.h to be re-enterable while _STD_TYPES_T
 // is defined until an inclusion of it without _STD_TYPES_T occurs, in which
 // case the header guard macro is defined.

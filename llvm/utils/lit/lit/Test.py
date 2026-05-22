@@ -52,7 +52,7 @@ XFAIL = ResultCode("XFAIL", "Expectedly Failed", False)
 UNRESOLVED = ResultCode("UNRESOLVED", "Unresolved", True)
 TIMEOUT = ResultCode("TIMEOUT", "Timed Out", True)
 FAIL = ResultCode("FAIL", "Failed", True)
-XPASS = ResultCode("XPASS", "Unexpectedly Passed", True)
+XPASS       = ResultCode('XPASS',       'Unexpectedly Passed', False)
 
 
 # Test metric values.

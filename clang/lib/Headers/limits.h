@@ -6,7 +6,7 @@
  *
 \*===----------------------------------------------------------------------===*/
 
-#ifndef __CLANG_LIMITS_H
+#if !defined(__CLANG_LIMITS_H) || !defined(_LIBC_LIMITS_H_)
 #define __CLANG_LIMITS_H
 
 #if defined(__MVS__) && __has_include_next(<limits.h>)

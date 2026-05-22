@@ -93,7 +93,7 @@ def main():
     )
     parser.add_argument(
         "-binary",
-        default="clang-format",
+        default="clang-format-21",
         help="location of binary to use for clang-format",
     )
     args = parser.parse_args()

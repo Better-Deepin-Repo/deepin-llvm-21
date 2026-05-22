@@ -467,7 +467,7 @@ arm::FloatABI arm::getDefaultFloatABI(const llvm::Triple &Triple) {
     case llvm::Triple::MuslEABI:
     case llvm::Triple::EABI:
       // EABI is always AAPCS, and if it was not marked 'hard', it's softfp
-      return FloatABI::SoftFP;
+      return FloatABI::Soft;
     default:
       return FloatABI::Invalid;
     }

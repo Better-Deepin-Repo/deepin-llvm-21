@@ -42,7 +42,8 @@ def ARMv6sm   : Architecture<"armv6s-m",  "ARMv6sm",  [HasV6MOps,
                                                        FeatureStrictAlign]>;
 
 def ARMv7a    : Architecture<"armv7-a",   "ARMv7a",   [HasV7Ops,
-                                                       FeatureNEON,
+                                                       FeatureVFP3,
+                                                       FeatureVFP3_D16,
                                                        FeatureDB,
                                                        FeatureDSP,
                                                        FeatureAClass,

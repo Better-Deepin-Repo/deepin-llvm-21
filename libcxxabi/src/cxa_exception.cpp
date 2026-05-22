@@ -291,14 +291,15 @@ __cxa_throw(void *thrown_object, std::type_info *tinfo, void (_LIBCXXABI_DTOR_FU
 
 #ifdef __USING_SJLJ_EXCEPTIONS__
     _Unwind_SjLj_RaiseException(&exception_header->unwindHeader);
-#else
+#elif !LIBCXXABI_ARM_EHABI
     _Unwind_RaiseException(&exception_header->unwindHeader);
+#else
+    _Unwind_RaiseException(exception_header->unwindHeader);
 #endif
     //  This only happens when there is no handler, or some unexpected unwinding
     //     error happens.
     failed_throw(exception_header);
 }
-
 
 // 2.5.3 Exception Handlers
 /*
@@ -583,7 +584,11 @@ void __cxa_end_catch() {
             //    to touch a foreign exception in any way, that is undefined
             //     behavior.  They likely can't since the only way to catch
             //     a foreign exception is with catch (...)!
+#if !LIBCXXABI_ARM_EHABI
             _Unwind_DeleteException(&globals->caughtExceptions->unwindHeader);
+#else
+            _Unwind_DeleteException(globals->caughtExceptions->unwindHeader);
+#endif
             globals->caughtExceptions = 0;
         }
     }
@@ -645,8 +650,10 @@ void __cxa_rethrow() {
     }
 #ifdef __USING_SJLJ_EXCEPTIONS__
     _Unwind_SjLj_RaiseException(&exception_header->unwindHeader);
-#else
+#elif !LIBCXXABI_ARM_EHABI
     _Unwind_RaiseException(&exception_header->unwindHeader);
+#else
+    _Unwind_RaiseException(exception_header->unwindHeader);
 #endif
 
     //  If we get here, some kind of unwinding error has occurred.
@@ -770,8 +777,10 @@ __cxa_rethrow_primary_exception(void* thrown_object)
         dep_exception_header->unwindHeader.exception_cleanup = dependent_exception_cleanup;
 #ifdef __USING_SJLJ_EXCEPTIONS__
         _Unwind_SjLj_RaiseException(&dep_exception_header->unwindHeader);
+#elif !LIBCXXABI_ARM_EHABI
+	_Unwind_RaiseException(&dep_exception_header->unwindHeader);
 #else
-        _Unwind_RaiseException(&dep_exception_header->unwindHeader);
+	_Unwind_RaiseException(dep_exception_header->unwindHeader);
 #endif
         // Some sort of unwinding error.  Note that terminate is a handler.
         __cxa_begin_catch(&dep_exception_header->unwindHeader);

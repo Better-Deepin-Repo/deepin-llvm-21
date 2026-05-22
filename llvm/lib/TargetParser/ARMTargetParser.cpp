@@ -657,9 +657,9 @@ StringRef ARM::getARMCPUForArch(const llvm::Triple &Triple, StringRef MArch) {
     case llvm::Triple::GNUEABIHF:
     case llvm::Triple::GNUEABIHFT64:
     case llvm::Triple::MuslEABIHF:
-      return "arm1176jzf-s";
+      return "cortex-a8";
     default:
-      return "arm7tdmi";
+      return "arm926ej-s";
     }
   }
 

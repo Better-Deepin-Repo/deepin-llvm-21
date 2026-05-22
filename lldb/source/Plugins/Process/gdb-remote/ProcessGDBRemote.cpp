@@ -98,7 +98,7 @@
 #elif defined(_WIN32)
 #define DEBUGSERVER_BASENAME "lldb-server.exe"
 #else
-#define DEBUGSERVER_BASENAME "lldb-server"
+#define DEBUGSERVER_BASENAME "lldb-server-" LLVM_VERSION_STRING
 #endif
 
 using namespace lldb;

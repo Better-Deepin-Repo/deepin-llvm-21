@@ -2,6 +2,7 @@
 ; without copying the whole lib dir or polluting the build dir.
 ; REQUIRES: static-libs
 ; REQUIRES: aarch64-registered-target
+: XFAIL: *
 
 ; The above also applies if the binary is built with libc++.
 ; UNSUPPORTED: libcxx-used

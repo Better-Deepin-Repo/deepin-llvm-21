@@ -112,8 +112,6 @@ inline uint64_t getTSCFrequency() XRAY_NEVER_INSTRUMENT {
 
 } // namespace __xray
 
-#else
-#error Target architecture is not supported.
 #endif // CPU architecture
 #endif // SANITIZER_FUCHSIA
 

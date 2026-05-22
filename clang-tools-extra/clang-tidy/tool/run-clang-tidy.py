@@ -301,10 +301,12 @@ async def main() -> None:
         help="Allow alpha checkers from clang-analyzer.",
     )
     parser.add_argument(
-        "-clang-tidy-binary", metavar="PATH", help="Path to clang-tidy binary."
+        "-clang-tidy-binary", metavar="PATH", help="Path to clang-tidy binary.",
+        default='clang-tidy-21'
     )
     parser.add_argument(
         "-clang-apply-replacements-binary",
+        default='clang-apply-replacements-21',
         metavar="PATH",
         help="Path to clang-apply-replacements binary.",
     )

@@ -293,7 +293,7 @@ def create_analyze_parser(from_build_command):
         "--use-analyzer",
         metavar="<path>",
         dest="clang",
-        default="clang",
+        default="clang-21",
         help="""'%(prog)s' uses the 'clang' executable relative to itself for
         static analysis. One can override this behavior with this option by
         using the 'clang' packaged with Xcode (on OS X) or from the PATH.""",

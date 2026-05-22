@@ -306,8 +306,8 @@ bool PerfJITEventListener::InitDebuggingDir() {
   // search for location to dump data to
   if (const char *BaseDir = getenv("JITDUMPDIR"))
     Path.append(BaseDir);
-  else if (!sys::path::home_directory(Path))
-    Path = ".";
+  else
+    sys::path::system_temp_directory(/*ErasedOnReboot*/ true, Path);
 
   // create debug directory
   Path += "/.debug/jit/";

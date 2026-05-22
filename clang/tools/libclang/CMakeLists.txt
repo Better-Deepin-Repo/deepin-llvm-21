@@ -131,7 +131,7 @@ if (UNIX AND ${CMAKE_SYSTEM_NAME} MATCHES "AIX")
     remove_definitions("-D_XOPEN_SOURCE=700")
 endif()
 
-add_clang_library(libclang ${ENABLE_SHARED} ${ENABLE_STATIC} INSTALL_WITH_TOOLCHAIN
+add_clang_library(libclang ${ENABLE_SHARED} ${ENABLE_STATIC} INSTALL_WITH_TOOLCHAIN SONAME
   OUTPUT_NAME ${output_name}
   ${SOURCES}
 
@@ -205,7 +205,7 @@ if(ENABLE_SHARED)
     endif()
     # Ensure that libclang.so gets rebuilt when the linker script changes.
     set_target_properties(libclang PROPERTIES
-                          VERSION ${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}${LLVM_VERSION_SUFFIX}
+                          VERSION ${LLVM_VERSION_MAJOR}
                           ${LIBCLANG_SOVERSION_ARG})
   endif()
 endif()

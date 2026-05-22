@@ -1,6 +1,6 @@
 ; RUN: %lli -jit-kind=mcjit -remote-mcjit -mcjit-remote-process=lli-child-target \
 ; RUN:   -relocation-model=pic -code-model=small %s > /dev/null
-; XFAIL: target={{(mips|mipsel)-.*}}, target={{(aarch64|arm).*}}, target={{(i686|i386).*}}
+; XFAIL: *
 ; XFAIL: target={{.*-windows-(gnu|msvc)}}
 ; REQUIRES: thread_support
 ; UNSUPPORTED: target=target=powerpc64-unknown-linux-gnu

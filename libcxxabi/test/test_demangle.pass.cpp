@@ -83,7 +83,7 @@ const char* invalid_cases[] = {
     "_ZNSt16allocator_traitsISaIN4llvm3sys2fs18directory_iteratorEEE9constructIS3_IS3_EEEDTcl12_S_constructfp_fp0_spcl7forwardIT0_Efp1_EEERS4_PT_DpOS7_",
     "3FooILdaaaaaaaaaaAAAAaaEE",
     "3FooILdaaaaaaaaaaaaaaEE",
-#if !LDBL_FP80
+#if !LDBL_FP80 && __LDBL_MANT_DIG__ < 64
     "_ZN5test01hIfEEvRAcvjplstT_Le4001a000000000000000E_c",
 #endif
     // The following test cases were found by libFuzzer+ASAN

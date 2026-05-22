@@ -27,6 +27,45 @@ _LIBCXXABI_HIDDEN uint64_t __getExceptionClass  (const _Unwind_Exception*);
 _LIBCXXABI_HIDDEN void     __setExceptionClass  (      _Unwind_Exception*, uint64_t);
 _LIBCXXABI_HIDDEN bool     __isOurExceptionClass(const _Unwind_Exception*);
 
+#if LIBCXXABI_ARM_EHABI
+// GCC has _Unwind_Control_Block in unwind.h (unwind_arm_common.h)
+#if defined(__clang__)
+struct _Unwind_Control_Block
+{
+	uint64_t exception_class;
+	void (*exception_cleanup)(_Unwind_Reason_Code, _Unwind_Control_Block *);
+	struct {
+		_Unwind_Word reserved1;
+		_Unwind_Word reserved2;
+		_Unwind_Word reserved3;
+		_Unwind_Word reserved4;
+		_Unwind_Word reserved5;
+	} unwinder_cache;
+	struct {
+		_Unwind_Word sp;
+		_Unwind_Word bitpattern[5];
+	} barrier_cache;
+	struct {
+		_Unwind_Word bitpattern[4];
+	} cleanup_cache;
+	struct {
+		_Unwind_Word fnstart;
+		_Unwind_Word *ehtp;
+		_Unwind_Word additional;
+		_Unwind_Word reserved1;
+	} pr_cache;
+	long long int :0;
+	operator _Unwind_Exception*() noexcept
+	{
+		return reinterpret_cast<_Unwind_Exception*>(this);
+	}
+};
+
+#endif
+
+#define _Unwind_Exception _Unwind_Control_Block
+#endif
+
 struct _LIBCXXABI_HIDDEN __cxa_exception {
 #if defined(__LP64__) || defined(_WIN64) || defined(_LIBCXXABI_ARM_EHABI)
     // Now _Unwind_Exception is marked with __attribute__((aligned)),

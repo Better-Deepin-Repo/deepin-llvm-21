@@ -51,13 +51,13 @@ else()
   set(OPENMP_ENABLE_WERROR ${LLVM_ENABLE_WERROR})
 
   # When building in tree we install the runtime according to the LLVM settings.
-  if(LLVM_ENABLE_PER_TARGET_RUNTIME_DIR AND NOT APPLE)
-    set(OPENMP_INSTALL_LIBDIR lib${LLVM_LIBDIR_SUFFIX}/${LLVM_DEFAULT_TARGET_TRIPLE} CACHE STRING
-        "Path where built openmp libraries should be installed.")
-  else()
+#  if(LLVM_ENABLE_PER_TARGET_RUNTIME_DIR AND NOT APPLE)
+#    set(OPENMP_INSTALL_LIBDIR lib${LLVM_LIBDIR_SUFFIX}/${LLVM_DEFAULT_TARGET_TRIPLE} CACHE STRING
+#        "Path where built openmp libraries should be installed.")
+#  else()
     set(OPENMP_INSTALL_LIBDIR "lib${LLVM_LIBDIR_SUFFIX}" CACHE STRING
         "Path where built OpenMP libraries should be installed.")
-  endif()
+#  endif()
 
   if (NOT MSVC)
     set(OPENMP_TEST_C_COMPILER ${LLVM_RUNTIME_OUTPUT_INTDIR}/clang)
@@ -121,6 +121,28 @@ else()
   include(GetClangResourceDir)
   get_clang_resource_dir(LIBOMP_HEADERS_INSTALL_PATH SUBDIR include)
 endif()
+
+option(OPENMP_USE_LLVM_UNWINDER "Build and use the LLVM unwinder" OFF)
+
+option(LIBOMP_ENABLE_RTTI "Enabling RTTI forces libomp to be a c++ lib" ${LLVM_ENABLE_RTTI})
+
+macro(add_runtimes_build_depends_if_needed target)
+  if(RUNTIMES_BUILD)
+    # required for rtti and libomp/libomptarget profiling if enabled
+    add_dependencies(${target} cxx-headers cxxabi_static cxx_static cxxabi_shared cxx_shared)
+    if(OPENMP_USE_LLVM_UNWINDER AND (NOT target STREQUAL "omp" AND NOT LIBOMP_ENABLE_RTTI))
+      add_dependencies(${target} unwind_static unwind_shared)
+      get_target_property(target_link_flags ${target} LINK_FLAGS)
+      set(runtimes_link_flags "-lunwind")
+      if(target_link_flags)
+        set(runtimes_link_flags "${target_link_flags} -lunwind")
+      endif()
+      set_target_properties(${target}
+        PROPERTIES
+        LINK_FLAGS "${runtimes_link_flags}")
+    endif()
+  endif()
+endmacro()
 
 # Build host runtime library, after LIBOMPTARGET variables are set since they are needed
 # to enable time profiling support in the OpenMP runtime.

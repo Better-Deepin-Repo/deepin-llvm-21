@@ -242,6 +242,7 @@ void ScriptInterpreterPython::ComputePythonDir(
   // the real python interpreter uses.  (e.g. lib for most, lib64 on RHEL
   // x86_64, or bin on Windows).
   llvm::sys::path::remove_filename(path);
+  llvm::sys::path::append(path, "/llvm-" + std::to_string(LLVM_VERSION_MAJOR));
   llvm::sys::path::append(path, LLDB_PYTHON_RELATIVE_LIBDIR);
 
 #if defined(_WIN32)

@@ -81,7 +81,7 @@ MipsSubtarget::MipsSubtarget(const Triple &TT, StringRef CPU, StringRef FS,
       InMips16HardFloat(Mips16HardFloat), InMicroMipsMode(false), HasDSP(false),
       HasDSPR2(false), HasDSPR3(false),
       AllowMixed16_32(Mixed16_32 || Mips_Os16), Os16(Mips_Os16), HasMSA(false),
-      UseTCCInDIV(false), HasSym32(false), HasEVA(false), DisableMadd4(false),
+      UseTCCInDIV(false), HasSym32(false), HasEVA(false), DisableMadd4(true),
       HasMT(false), HasCRC(false), HasVirt(false), HasGINV(false),
       UseIndirectJumpsHazard(false), StrictAlign(false),
       StackAlignOverride(StackAlignOverride), TM(TM), TargetTriple(TT),
@@ -92,6 +92,9 @@ MipsSubtarget::MipsSubtarget(const Triple &TT, StringRef CPU, StringRef FS,
 
   if (MipsArchVersion == MipsDefault)
     MipsArchVersion = Mips32;
+
+  if (hasMips32r6() || hasMips64r6())
+    DisableMadd4 = false;
 
   // MIPS-I has not been tested.
   if (MipsArchVersion == Mips1 && !MIPS1WarningPrinted) {
@@ -246,6 +249,7 @@ MipsSubtarget &
 MipsSubtarget::initializeSubtargetDependencies(StringRef CPU, StringRef FS,
                                                const TargetMachine &TM) {
   StringRef CPUName = MIPS_MC::selectMipsCPU(TM.getTargetTriple(), CPU);
+  SubtargetFeatures Features(FS);
 
   // Parse features string.
   ParseSubtargetFeatures(CPUName, /*TuneCPU*/ CPUName, FS);
@@ -267,6 +271,13 @@ MipsSubtarget::initializeSubtargetDependencies(StringRef CPU, StringRef FS,
   if ((isABI_N32() || isABI_N64()) && !isGP64bit())
     reportFatalUsageError("64-bit code requested on a subtarget that doesn't "
                           "support it!");
+
+  for (const std::string &Feature : Features.getFeatures()) {
+    if (Feature == "+nomadd4")
+      DisableMadd4 = true;
+    else if (Feature == "-nomadd4")
+      DisableMadd4 = false;
+  }
 
   return *this;
 }

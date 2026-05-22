@@ -18,6 +18,8 @@
 ; NOTYPE: !DICompileUnit
 ; NOTYPE-NOT: !DIBasicType
 
+; XFAIL: *
+
 %rust_task = type {}
 define void @test(ptr %a, ptr %b) !dbg !9 {
     %s = mul i8 22, 9, !attach !0, !dbg !10

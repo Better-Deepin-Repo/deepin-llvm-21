@@ -157,6 +157,7 @@ set_source_files_properties(${LIBOMP_ASMFILES} ${LIBOMP_GNUASMFILES} PROPERTIES 
 if(NOT ${LIBOMP_USE_STDCPPLIB})
   set(LIBOMP_LINKER_LANGUAGE C)
   set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+  set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -nostdlib++")
 else()
   set(LIBOMP_LINKER_LANGUAGE CXX)
 endif()
@@ -234,6 +235,8 @@ else()
     LINKER_LANGUAGE ${LIBOMP_LINKER_LANGUAGE}
   )
 endif()
+
+add_runtimes_build_depends_if_needed(omp)
 
 # Get the library's location within the build tree for the unit tester
 if(NOT WIN32)

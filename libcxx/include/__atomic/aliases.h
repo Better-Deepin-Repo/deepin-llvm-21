@@ -96,6 +96,7 @@ using __largest_lock_free_type _LIBCPP_NODEBUG = char;
 #  endif
 
 #  ifndef _LIBCPP_NO_LOCK_FREE_TYPES
+#ifndef NO_LOCK_FREE
 using __contention_t_or_largest _LIBCPP_NODEBUG =
     __conditional_t<__libcpp_is_always_lock_free<__cxx_contention_t>::__value,
                     __cxx_contention_t,
@@ -105,6 +106,8 @@ using atomic_signed_lock_free   = atomic<__contention_t_or_largest>;
 using atomic_unsigned_lock_free = atomic<make_unsigned_t<__contention_t_or_largest>>;
 #  endif // !_LIBCPP_NO_LOCK_FREE_TYPES
 #endif   // C++20
+#endif
+#undef NO_LOCK_FREE
 
 _LIBCPP_END_NAMESPACE_STD
 

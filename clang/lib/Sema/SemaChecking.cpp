@@ -1354,8 +1354,8 @@ void Sema::checkFortifiedBuiltinMemoryFunction(FunctionDecl *FD,
   case Builtin::BI__builtin___memcpy_chk:
   case Builtin::BI__builtin___memmove_chk:
   case Builtin::BI__builtin___memset_chk:
-  case Builtin::BI__builtin___strlcat_chk:
-  case Builtin::BI__builtin___strlcpy_chk:
+//  case Builtin::BI__builtin___strlcat_chk:
+//  case Builtin::BI__builtin___strlcpy_chk:
   case Builtin::BI__builtin___strncat_chk:
   case Builtin::BI__builtin___strncpy_chk:
   case Builtin::BI__builtin___stpncpy_chk:
@@ -3803,10 +3803,10 @@ bool Sema::CheckFunctionCall(FunctionDecl *FDecl, CallExpr *TheCall,
   switch (CMId) {
   case 0:
     return false;
-  case Builtin::BIstrlcpy: // fallthrough
+/*  case Builtin::BIstrlcpy: // fallthrough
   case Builtin::BIstrlcat:
     CheckStrlcpycatArguments(TheCall, FnInfo);
-    break;
+    break;*/
   case Builtin::BIstrncat:
     CheckStrncatArguments(TheCall, FnInfo);
     break;

@@ -64,7 +64,7 @@ endif(LLVM_USE_PERF)
 add_mlir_library(MLIRExecutionEngine
   ExecutionEngine.cpp
 
-  EXCLUDE_FROM_LIBMLIR
+#  EXCLUDE_FROM_LIBMLIR
 
   ADDITIONAL_HEADER_DIRS
   ${MLIR_MAIN_INCLUDE_DIR}/mlir/ExecutionEngine

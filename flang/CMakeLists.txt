@@ -25,7 +25,7 @@ endif()
 set(FLANG_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Python is needed for symbol extracting tool
-set(LLVM_MINIMUM_PYTHON_VERSION 3.8)
+set(LLVM_MINIMUM_PYTHON_VERSION 3.7)
 find_package(Python3 ${LLVM_MINIMUM_PYTHON_VERSION} REQUIRED
     COMPONENTS Interpreter)
 

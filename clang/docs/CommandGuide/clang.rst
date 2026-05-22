@@ -372,23 +372,9 @@ Clang fully supports cross compilation as an inherent part of its design.
 Depending on how your version of Clang is configured, it may have support for a
 number of cross compilers, or may only support a native target.
 
-.. option:: -arch <architecture>
-
-  Specify the architecture to build for (Mac OS X specific).
-
 .. option:: -target <architecture>
 
   Specify the architecture to build for (all platforms).
-
-.. option:: -mmacos-version-min=<version>
-
-  When building for macOS, specify the minimum version supported by your
-  application.
-
-.. option:: -miphoneos-version-min
-
-  When building for iPhone OS, specify the minimum version supported by your
-  application.
 
 .. option:: --print-supported-cpus
 
@@ -768,11 +754,6 @@ ENVIRONMENT
   paths to be used when processing the corresponding language. Search paths are
   delimited as for the :envvar:`CPATH` environment variable.
 
-.. envvar:: MACOSX_DEPLOYMENT_TARGET
-
-  If :option:`-mmacos-version-min` is unspecified, the default deployment
-  target is read from this environment variable. This option only affects
-  Darwin targets.
 
 BUGS
 ----

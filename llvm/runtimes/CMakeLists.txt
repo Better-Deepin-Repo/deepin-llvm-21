@@ -146,10 +146,15 @@ endfunction()
 # is required because the other runtimes need the builtin libraries present
 # before the just-built compiler can pass the configuration tests.
 get_compiler_rt_path(compiler_rt_path)
-if(compiler_rt_path)
+# check if builtins have been disabled
+set(RUNTIMES_BUILD_BUILTINS ON)
+if(DEFINED COMPILER_RT_BUILD_BUILTINS)
+  set(RUNTIMES_BUILD_BUILTINS ${COMPILER_RT_BUILD_BUILTINS})
+endif()
+if(compiler_rt_path AND RUNTIMES_BUILD_BUILTINS)
   # If the user did not specify the targets infer them from the runtimes.
   set(builtin_targets ${LLVM_BUILTIN_TARGETS})
-  if(NOT builtin_targets)
+  if(NOT LLVM_BUILTIN_TARGETS)
     if("compiler-rt" IN_LIST LLVM_ENABLE_RUNTIMES)
       list(APPEND builtin_targets "default")
     endif()
@@ -270,6 +275,7 @@ function(runtime_default_target)
                                       -DLLVM_ENABLE_PROJECTS_USED=${LLVM_ENABLE_PROJECTS_USED}
                                       -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=${LLVM_ENABLE_PER_TARGET_RUNTIME_DIR}
                                       -DLLVM_BUILD_TOOLS=${LLVM_BUILD_TOOLS}
+                                      -DCMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}
                                       -DCMAKE_C_COMPILER_WORKS=ON
                                       -DCMAKE_CXX_COMPILER_WORKS=ON
                                       -DCMAKE_Fortran_COMPILER_WORKS=ON
@@ -636,7 +642,7 @@ if(build_runtimes)
     # build directory cannot find the C++ headers in certain configurations.
     # I need to build a mechanism for runtime projects to provide CMake code
     # that executes at LLVM configuration time to handle this case.
-    add_dependencies(clang-bootstrap-deps runtimes-configure)
+    #add_dependencies(clang-bootstrap-deps runtimes-configure)
     # We need to add the runtimes as a dependency because compiler-rt can be
     # built as part of runtimes and we need the profile runtime for PGO
     add_dependencies(clang-bootstrap-deps runtimes)

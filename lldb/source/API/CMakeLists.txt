@@ -40,7 +40,12 @@ add_custom_target(lldb-sbapi-dwarf-enums
   DEPENDS ${sb_languages_file})
 set_target_properties(lldb-sbapi-dwarf-enums PROPERTIES FOLDER "LLDB/Tablegenning")
 
-add_lldb_library(liblldb SHARED ${option_framework}
+set(output_name lldb)
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+  set(output_name liblldb)
+endif()
+
+add_lldb_library(liblldb SHARED OUTPUT_NAME ${output_name} SONAME
   SBAddress.cpp
   SBAddressRange.cpp
   SBAddressRangeList.cpp
@@ -200,7 +205,7 @@ endif()
 
 set_target_properties(liblldb
   PROPERTIES
-  VERSION ${LLDB_VERSION}
+  VERSION 1
 )
 
 target_compile_definitions(liblldb PRIVATE LLDB_IN_LIBLLDB)
@@ -264,12 +269,12 @@ elseif (LLDB_EXPORT_ALL_SYMBOLS)
   add_llvm_symbol_exports(liblldb ${exported_symbol_file})
 endif()
 
-if (NOT MSVC)
-  set_target_properties(liblldb
-    PROPERTIES
-    OUTPUT_NAME lldb
-  )
-endif()
+#if (NOT MSVC)
+#  set_target_properties(liblldb
+#    PROPERTIES
+#    OUTPUT_NAME lldb
+#    )
+#endif()
 
 # The Clang expression parser in LLDB requires the Clang resource directory to function.
 if (TARGET clang-resource-headers)

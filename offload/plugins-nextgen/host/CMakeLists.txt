@@ -27,6 +27,8 @@ else()
   target_include_directories(omptarget.rtl.host PRIVATE dynamic_ffi)
 endif()
 
+add_runtimes_build_depends_if_needed("omptarget.rtl.${machine}")
+
 target_include_directories(omptarget.rtl.host PRIVATE
                            ${LIBOMPTARGET_INCLUDE_DIR})
 
