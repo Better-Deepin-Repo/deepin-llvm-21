@@ -1480,7 +1480,7 @@ bool MasmParser::parsePrimaryExpr(const MCExpr *&Res, SMLoc &EndLoc,
       auto VarIt = Variables.find(SymbolName.lower());
       if (VarIt != Variables.end())
         SymbolName = VarIt->second.Name;
-      Sym = getContext().parseSymbol(SymbolName);
+      Sym = getContext().getOrCreateSymbol(SymbolName);
     }
 
     // If this is an absolute variable reference, substitute it now to preserve
@@ -1965,7 +1965,7 @@ bool MasmParser::parseStatement(ParseStatementInfo &Info,
     if (IDVal == "@@") {
       Sym = Ctx.createDirectionalLocalSymbol(0);
     } else {
-      Sym = getContext().parseSymbol(IDVal);
+      Sym = getContext().getOrCreateSymbol(IDVal);
     }
 
     // End of Labels should be treated as end of line for lexing
@@ -3009,7 +3009,8 @@ bool MasmParser::parseDirectiveEquate(StringRef IDVal, StringRef Name,
     return false;
   }
 
-  auto *Sym = getContext().parseSymbol(Var.Name);
+  MCSymbol *Sym = getContext().getOrCreateSymbol(Var.Name);
+
   const MCConstantExpr *PrevValue =
       Sym->isVariable()
           ? dyn_cast_or_null<MCConstantExpr>(Sym->getVariableValue())
@@ -3317,7 +3318,7 @@ bool MasmParser::parseDirectiveNamedValue(StringRef TypeName, unsigned Size,
                                           StringRef Name, SMLoc NameLoc) {
   if (StructInProgress.empty()) {
     // Initialize named data value.
-    MCSymbol *Sym = getContext().parseSymbol(Name);
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
     getStreamer().emitLabel(Sym);
     unsigned Count;
     if (emitIntegralValues(Size, &Count))
@@ -3508,7 +3509,7 @@ bool MasmParser::parseDirectiveNamedRealValue(StringRef TypeName,
                                               SMLoc NameLoc) {
   if (StructInProgress.empty()) {
     // Initialize named data value.
-    MCSymbol *Sym = getContext().parseSymbol(Name);
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
     getStreamer().emitLabel(Sym);
     unsigned Count;
     if (emitRealValues(Semantics, &Count))
@@ -4002,7 +4003,7 @@ bool MasmParser::parseDirectiveNamedStructValue(const StructInfo &Structure,
                                                 SMLoc DirLoc, StringRef Name) {
   if (StructInProgress.empty()) {
     // Initialize named data value.
-    MCSymbol *Sym = getContext().parseSymbol(Name);
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
     getStreamer().emitLabel(Sym);
     unsigned Count;
     if (emitStructValues(Structure, &Count))
@@ -4503,9 +4504,9 @@ bool MasmParser::parseDirectivePurgeMacro(SMLoc DirectiveLoc) {
 bool MasmParser::parseDirectiveExtern() {
   // .extern is the default - but we still need to take any provided type info.
   auto parseOp = [&]() -> bool {
-    MCSymbol *Sym;
+    StringRef Name;
     SMLoc NameLoc = getTok().getLoc();
-    if (parseSymbol(Sym))
+    if (parseIdentifier(Name))
       return Error(NameLoc, "expected name");
     if (parseToken(AsmToken::Colon))
       return true;
@@ -4518,9 +4519,10 @@ bool MasmParser::parseDirectiveExtern() {
       AsmTypeInfo Type;
       if (lookUpType(TypeName, Type))
         return Error(TypeLoc, "unrecognized type");
-      KnownType[Sym->getName().lower()] = Type;
+      KnownType[Name.lower()] = Type;
     }
 
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
     Sym->setExternal(true);
     getStreamer().emitSymbolAttribute(Sym, MCSA_Extern);
 
@@ -4536,10 +4538,11 @@ bool MasmParser::parseDirectiveExtern() {
 ///  ::= { ".globl", ".weak", ... } [ identifier ( , identifier )* ]
 bool MasmParser::parseDirectiveSymbolAttribute(MCSymbolAttr Attr) {
   auto parseOp = [&]() -> bool {
+    StringRef Name;
     SMLoc Loc = getTok().getLoc();
-    MCSymbol *Sym;
-    if (parseSymbol(Sym))
+    if (parseIdentifier(Name))
       return Error(Loc, "expected identifier");
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
 
     // Assembler local symbols don't make any sense here. Complain loudly.
     if (Sym->isTemporary())
@@ -4562,9 +4565,12 @@ bool MasmParser::parseDirectiveComm(bool IsLocal) {
     return true;
 
   SMLoc IDLoc = getLexer().getLoc();
-  MCSymbol *Sym;
-  if (parseSymbol(Sym))
+  StringRef Name;
+  if (parseIdentifier(Name))
     return TokError("expected identifier in directive");
+
+  // Handle the identifier as the key symbol.
+  MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
 
   if (getLexer().isNot(AsmToken::Comma))
     return TokError("unexpected token in directive");

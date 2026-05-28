@@ -1,2 +1,2 @@
-@LLVM_DIR@/include/lld
-@LLVM_LIBDIR@/cmake/lld/*.cmake
+usr/lib/llvm-@LLVM_VERSION@/include/lld
+usr/lib/llvm-@LLVM_VERSION@/lib/cmake/lld/*.cmake

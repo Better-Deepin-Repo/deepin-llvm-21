@@ -666,7 +666,7 @@ void ProcessWindows::OnExitProcess(uint32_t exit_code) {
     target->ModulesDidUnload(unloaded_modules, true);
   }
 
-  SetExitStatus(exit_code, /*exit_string=*/"");
+  SetProcessExitStatus(GetID(), true, 0, exit_code);
   SetPrivateState(eStateExited);
 
   ProcessDebugger::OnExitProcess(exit_code);

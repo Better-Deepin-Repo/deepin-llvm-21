@@ -109,8 +109,8 @@ std::string x86::getX86TargetCPU(const Driver &D, const ArgList &Args,
   case llvm::Triple::FreeBSD:
     return "i686";
   default:
-    // Fallback to p4.
-    return "pentium4";
+    // Fallback to i686.
+    return "i686";
   }
 }
 

@@ -5,9 +5,9 @@ usr/bin/merge-fdata-@LLVM_VERSION@
 usr/bin/perf2bolt-@LLVM_VERSION@
 usr/bin/llvm-bolt-binary-analysis-@LLVM_VERSION@
 
-@LLVM_DIR@/bin/llvm-bolt
-@LLVM_DIR@/bin/llvm-bolt-heatmap
-@LLVM_DIR@/bin/llvm-boltdiff
-@LLVM_DIR@/bin/merge-fdata
-@LLVM_DIR@/bin/perf2bolt
-@LLVM_DIR@/bin/llvm-bolt-binary-analysis
+usr/lib/llvm-@LLVM_VERSION@/bin/llvm-bolt
+usr/lib/llvm-@LLVM_VERSION@/bin/llvm-bolt-heatmap
+usr/lib/llvm-@LLVM_VERSION@/bin/llvm-boltdiff
+usr/lib/llvm-@LLVM_VERSION@/bin/merge-fdata
+usr/lib/llvm-@LLVM_VERSION@/bin/perf2bolt
+usr/lib/llvm-@LLVM_VERSION@/bin/llvm-bolt-binary-analysis

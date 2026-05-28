@@ -153,9 +153,8 @@ void top() {
   int Int = mySource1<int>();
   clang_analyzer_isTainted(Int); // expected-warning {{YES}}
 
-  // It's fine to not propagate taint to empty classes, since they don't have any data members.
   Empty E = mySource1<Empty>();
-  clang_analyzer_isTainted(E); // expected-warning {{NO}}
+  clang_analyzer_isTainted(E); // expected-warning {{YES}}
 
   Aggr A = mySource1<Aggr>();
   clang_analyzer_isTainted(A);      // expected-warning {{YES}}

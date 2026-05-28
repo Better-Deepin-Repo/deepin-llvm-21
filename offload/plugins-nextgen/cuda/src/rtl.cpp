@@ -1442,11 +1442,7 @@ struct CUDAPluginTy final : public GenericPluginTy {
       return ElfOrErr.takeError();
 
     // Get the numeric value for the image's `sm_` value.
-    const auto Header = ElfOrErr->getELFFile().getHeader();
-    unsigned SM =
-        Header.e_ident[ELF::EI_ABIVERSION] == ELF::ELFABIVERSION_CUDA_V1
-            ? Header.e_flags & ELF::EF_CUDA_SM
-            : (Header.e_flags & ELF::EF_CUDA_SM_MASK) >> ELF::EF_CUDA_SM_OFFSET;
+    auto SM = ElfOrErr->getPlatformFlags() & ELF::EF_CUDA_SM;
 
     CUdevice Device;
     CUresult Res = cuDeviceGet(&Device, DeviceId);

@@ -1,1 +1,1 @@
-@LLVM_LIBDIR@/libclang-cpp.so
+usr/lib/llvm-@LLVM_VERSION@/lib/libclang-cpp.so

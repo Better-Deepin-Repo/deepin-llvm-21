@@ -328,21 +328,9 @@ protected:
       Builder.defineMacro("_REENTRANT");
     if (Opts.CPlusPlus)
       Builder.defineMacro("_GNU_SOURCE");
-    if (this->HasFloat128)
-      Builder.defineMacro("__FLOAT128__");
   }
 public:
-  HurdTargetInfo(const llvm::Triple &Triple, const TargetOptions &Opts)
-      : OSTargetInfo<Target>(Triple, Opts) {
-    switch (Triple.getArch()) {
-    default:
-      break;
-    case llvm::Triple::x86:
-    case llvm::Triple::x86_64:
-      this->HasFloat128 = true;
-      break;
-    }
-  }
+  using OSTargetInfo<Target>::OSTargetInfo;
 };
 
 // Linux target

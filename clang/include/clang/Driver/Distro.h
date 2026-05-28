@@ -84,7 +84,6 @@ public:
     UbuntuOracular,
     UbuntuPlucky,
     UbuntuQuesting,
-    UbuntuResolute,
     UnknownDistro
   };
 
@@ -136,7 +135,7 @@ public:
   }
 
   bool IsUbuntu() const {
-    return DistroVal >= UbuntuHardy && DistroVal <= UbuntuResolute;
+    return DistroVal >= UbuntuHardy && DistroVal <= UbuntuQuesting;
   }
 
   bool IsAlpineLinux() const { return DistroVal == AlpineLinux; }

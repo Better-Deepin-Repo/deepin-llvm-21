@@ -3252,10 +3252,9 @@ void VPlanTransforms::narrowInterleaveGroups(VPlan &Plan, ElementCount VF,
     return;
 
   // Convert InterleaveGroup \p R to a single VPWidenLoadRecipe.
-  SmallPtrSet<VPValue *, 4> NarrowedOps;
-  auto NarrowOp = [&NarrowedOps](VPValue *V) -> VPValue * {
+  auto NarrowOp = [](VPValue *V) -> VPValue * {
     auto *R = V->getDefiningRecipe();
-    if (!R || NarrowedOps.contains(V))
+    if (!R)
       return V;
     if (auto *LoadGroup = dyn_cast<VPInterleaveRecipe>(R)) {
       // Narrow interleave group to wide load, as transformed VPlan will only
@@ -3265,7 +3264,6 @@ void VPlanTransforms::narrowInterleaveGroups(VPlan &Plan, ElementCount VF,
           LoadGroup->getAddr(), LoadGroup->getMask(), /*Consecutive=*/true,
           /*Reverse=*/false, {}, LoadGroup->getDebugLoc());
       L->insertBefore(LoadGroup);
-      NarrowedOps.insert(L);
       return L;
     }
 
@@ -3273,7 +3271,6 @@ void VPlanTransforms::narrowInterleaveGroups(VPlan &Plan, ElementCount VF,
       assert(RepR->isSingleScalar() &&
              isa<LoadInst>(RepR->getUnderlyingInstr()) &&
              "must be a single scalar load");
-      NarrowedOps.insert(RepR);
       return RepR;
     }
     auto *WideLoad = cast<VPWidenLoadRecipe>(R);
@@ -3284,7 +3281,6 @@ void VPlanTransforms::narrowInterleaveGroups(VPlan &Plan, ElementCount VF,
                                     WideLoad->operands(), /*IsUniform*/ true,
                                     /*Mask*/ nullptr, *WideLoad);
     N->insertBefore(WideLoad);
-    NarrowedOps.insert(N);
     return N;
   };
 

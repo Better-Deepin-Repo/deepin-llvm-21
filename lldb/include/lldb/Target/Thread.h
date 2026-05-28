@@ -479,11 +479,6 @@ public:
   bool SetSelectedFrameByIndexNoisily(uint32_t frame_idx,
                                       Stream &output_stream);
 
-  /// Resets the selected frame index of this object.
-  void ClearSelectedFrameIndex() {
-    return GetStackFrameList()->ClearSelectedFrameIndex();
-  }
-
   void SetDefaultFileAndLineToSelectedFrame() {
     GetStackFrameList()->SetDefaultFileAndLineToSelectedFrame();
   }

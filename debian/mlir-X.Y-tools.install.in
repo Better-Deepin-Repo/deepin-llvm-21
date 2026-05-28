@@ -2,6 +2,6 @@ usr/bin/mlir-*
 usr/bin/tblgen-lsp-server-@LLVM_VERSION@
 usr/bin/tblgen-to-irdl-@LLVM_VERSION@
 
-@LLVM_DIR@/bin/mlir-*
-@LLVM_DIR@/bin/tblgen-lsp-server
-@LLVM_DIR@/bin/tblgen-to-irdl
+usr/lib/llvm-@LLVM_VERSION@/bin/mlir-*
+usr/lib/llvm-@LLVM_VERSION@/bin/tblgen-lsp-server
+usr/lib/llvm-@LLVM_VERSION@/bin/tblgen-to-irdl

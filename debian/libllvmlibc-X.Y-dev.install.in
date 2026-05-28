@@ -1,1 +1,1 @@
-@LLVM_LIBDIR@/libllvmlibc.a
+usr/lib/llvm-@LLVM_VERSION@/lib/libllvmlibc.a

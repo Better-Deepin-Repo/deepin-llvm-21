@@ -1,6 +1,6 @@
-@LLVM_DIR@/bin/lldb*
-@LLVM_DIR@/bin/lldb-server*
-@LLVM_DIR@/bin/lldb-argdumper
+usr/lib/llvm-@LLVM_VERSION@/bin/lldb*
+usr/lib/llvm-@LLVM_VERSION@/bin/lldb-server*
+usr/lib/llvm-@LLVM_VERSION@/bin/lldb-argdumper
 
 usr/bin/lldb-@LLVM_VERSION@*
 usr/bin/lldb-server-@LLVM_VERSION@*

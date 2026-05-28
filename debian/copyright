@@ -48,6 +48,7 @@ License: APACHE-2-LLVM-EXCEPTIONS
  Software.
 
 Files: compiler-rt/lib/BlocksRuntime/*
+ lldb/tools/debugserver/source/MacOSX/stack_logging.h
 Copyright: 2008-2010 Apple, Inc.
 License: MIT
 
@@ -71,15 +72,34 @@ License: solar-public-domain
  .
  * There's ABSOLUTELY NO WARRANTY, express or implied.
 
-Files: llvm/test/YAMLParser/*
+Files: lldb/third_party/Python/module/unittest2*
+Copyright: 1999-2003 Steve Purcell
+           2003-2010 Python Software Foundation
+License: Python
+ This module is free software, and you may redistribute it and/or modify
+ it under the same terms as Python itself, so long as this copyright message
+ and disclaimer are retained in their original form.
+ .
+ IN NO EVENT SHALL THE AUTHOR BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT,
+ SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OF
+ THIS CODE, EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+ DAMAGE.
+ .
+ THE AUTHOR SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE.  THE CODE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS,
+ AND THERE IS NO OBLIGATION WHATSOEVER TO PROVIDE MAINTENANCE,
+ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+
+Files: llvm/llvmtest/YAMLParser/*
 Copyright: 2006 Kirill Simonov
 License: MIT
 
-Files: third-party/unittest/googletest/*
+Files: llvm/utils/unittest/googletest/*
 Copyright: 2006-2008, Google Inc.
 License: BSD-3-Clause
 
-Files: third-party/unittest/googlemock/*
+Files: llvm/utils/unittest/googlemock/*
 Copyright: 2008, Google Inc.
 License: BSD-3-Clause
 

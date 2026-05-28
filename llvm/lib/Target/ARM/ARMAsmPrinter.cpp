@@ -97,8 +97,7 @@ void ARMAsmPrinter::emitXXStructor(const DataLayout &DL, const Constant *CV) {
 
   const MCExpr *E = MCSymbolRefExpr::create(
       GetARMGVSymbol(GV, ARMII::MO_NO_FLAG),
-      (TM.getTargetTriple().isOSBinFormatELF() ? ARM::S_TARGET1 : ARM::S_None),
-      OutContext);
+      (Subtarget->isTargetELF() ? ARM::S_TARGET1 : ARM::S_None), OutContext);
 
   OutStreamer->emitValue(E, Size);
 }
@@ -596,7 +595,8 @@ void ARMAsmPrinter::emitEndOfAsmFile(Module &M) {
   ARMTargetStreamer &ATS = static_cast<ARMTargetStreamer &>(TS);
 
   if (OptimizationGoals > 0 &&
-      (TT.isTargetAEABI() || TT.isTargetGNUAEABI() || TT.isTargetMuslAEABI()))
+      (Subtarget->isTargetAEABI() || Subtarget->isTargetGNUAEABI() ||
+       Subtarget->isTargetMuslAEABI()))
     ATS.emitAttribute(ARMBuildAttrs::ABI_optimization_goals, OptimizationGoals);
   OptimizationGoals = -1;
 
@@ -866,10 +866,9 @@ static uint8_t getModifierSpecifier(ARMCP::ARMCPModifier Modifier) {
 
 MCSymbol *ARMAsmPrinter::GetARMGVSymbol(const GlobalValue *GV,
                                         unsigned char TargetFlags) {
-  const Triple &TT = TM.getTargetTriple();
-  if (TT.isOSBinFormatMachO()) {
+  if (Subtarget->isTargetMachO()) {
     bool IsIndirect =
-        (TargetFlags & ARMII::MO_NONLAZY) && getTM().isGVIndirectSymbol(GV);
+        (TargetFlags & ARMII::MO_NONLAZY) && Subtarget->isGVIndirectSymbol(GV);
 
     if (!IsIndirect)
       return getSymbol(GV);
@@ -886,8 +885,9 @@ MCSymbol *ARMAsmPrinter::GetARMGVSymbol(const GlobalValue *GV,
       StubSym = MachineModuleInfoImpl::StubValueTy(getSymbol(GV),
                                                    !GV->hasInternalLinkage());
     return MCSym;
-  } else if (TT.isOSBinFormatCOFF()) {
-    assert(TT.isOSWindows() && "Windows is the only supported COFF target");
+  } else if (Subtarget->isTargetCOFF()) {
+    assert(Subtarget->isTargetWindows() &&
+           "Windows is the only supported COFF target");
 
     bool IsIndirect =
         (TargetFlags & (ARMII::MO_DLLIMPORT | ARMII::MO_COFFSTUB));
@@ -914,7 +914,7 @@ MCSymbol *ARMAsmPrinter::GetARMGVSymbol(const GlobalValue *GV,
     }
 
     return MCSym;
-  } else if (TT.isOSBinFormatELF()) {
+  } else if (Subtarget->isTargetELF()) {
     return getSymbolPreferLocal(*GV);
   }
   llvm_unreachable("unexpected target");
@@ -960,8 +960,7 @@ void ARMAsmPrinter::emitMachineConstantPoolValue(
 
     // On Darwin, const-pool entries may get the "FOO$non_lazy_ptr" mangling, so
     // flag the global as MO_NONLAZY.
-    unsigned char TF =
-        TM.getTargetTriple().isOSBinFormatMachO() ? ARMII::MO_NONLAZY : 0;
+    unsigned char TF = Subtarget->isTargetMachO() ? ARMII::MO_NONLAZY : 0;
     MCSym = GetARMGVSymbol(GV, TF);
   } else if (ACPV->isMachineBasicBlock()) {
     const MachineBasicBlock *MBB = cast<ARMConstantPoolMBB>(ACPV)->getMBB();

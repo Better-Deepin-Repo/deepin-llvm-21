@@ -1,6 +1,4 @@
 # Does not link otherwise
-clang-@LLVM_VERSION@: embedded-library @LLVM_DIR@/bin/clang: libjsoncpp
+clang-@LLVM_VERSION@: embedded-library usr/lib/llvm-@LLVM_VERSION@/bin/clang: libjsoncpp
 # expected
-clang-@LLVM_VERSION@: executable-not-elf-or-script *@LLVM_DIR@/share/clang/bash-autocomplete.sh*
-# known ...
-clang-@LLVM_VERSION@: no-manual-page
+clang-@LLVM_VERSION@: executable-not-elf-or-script *usr/lib/llvm-@LLVM_VERSION@/share/clang/bash-autocomplete.sh*

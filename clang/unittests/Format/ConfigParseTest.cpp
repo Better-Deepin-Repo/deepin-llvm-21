@@ -1249,13 +1249,6 @@ TEST(ConfigParseTest, ParsesConfigurationWithLanguages) {
               IndentWidth, 56u);
 }
 
-TEST(ConfigParseTest, AllowCommentOnlyConfigFile) {
-  FormatStyle Style = {};
-  Style.Language = FormatStyle::LK_Cpp;
-  EXPECT_EQ(parseConfiguration("#Language: C", &Style), ParseError::Success);
-  EXPECT_EQ(Style.Language, FormatStyle::LK_Cpp);
-}
-
 TEST(ConfigParseTest, AllowCppForC) {
   FormatStyle Style = {};
   Style.Language = FormatStyle::LK_C;
@@ -1276,7 +1269,7 @@ TEST(ConfigParseTest, AllowCppForC) {
             ParseError::Success);
 }
 
-TEST(ConfigParseTest, HandleDotHFile) {
+TEST(ConfigParseTest, HandleNonCppDotHFile) {
   FormatStyle Style = {};
   Style.Language = FormatStyle::LK_Cpp;
   EXPECT_EQ(parseConfiguration("Language: C", &Style,
@@ -1287,14 +1280,11 @@ TEST(ConfigParseTest, HandleDotHFile) {
 
   Style = {};
   Style.Language = FormatStyle::LK_Cpp;
-  EXPECT_EQ(parseConfiguration("Language: Cpp\n"
-                               "...\n"
-                               "Language: C",
-                               &Style,
+  EXPECT_EQ(parseConfiguration("Language: ObjC", &Style,
                                /*AllowUnknownOptions=*/false,
                                /*IsDotHFile=*/true),
             ParseError::Success);
-  EXPECT_EQ(Style.Language, FormatStyle::LK_Cpp);
+  EXPECT_EQ(Style.Language, FormatStyle::LK_ObjC);
 }
 
 TEST(ConfigParseTest, UsesLanguageForBasedOnStyle) {

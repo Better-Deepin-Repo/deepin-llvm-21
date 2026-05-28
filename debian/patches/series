@@ -73,6 +73,8 @@ mips/mips-force-nomadd4.patch
 mips/syscall-mips64el-def.diff
 
 26-set-correct-float-abi.diff
+clang-baseline-fix-i386.patch
+disable-sse2-old-x86.diff
 clang-arm-default-vfp3-on-armv7a.patch
 
 # For the bootstrap
@@ -85,7 +87,6 @@ remove-apple-clang-manpage.diff
 
 # Hurd port
 hurd/hurd-pathmax.diff
-hurd/47211c4b96e99a3344a71570a99b991c5f5c1c01.patch
 
 930008-arm.diff
 bootstrap-fix-include-next.diff
@@ -106,6 +107,7 @@ openmp-fix-runtimes-build.diff
 libclc-fix-prepare_builtins-rpath.diff
 llvm-runtimes-builtins-build-check.diff
 issue-54242.diff
+protobuf_3.21.patch
 
 # compiler-rt
 compiler-rt/compilerrt-builtins-arch-fix-armhf.diff
@@ -135,9 +137,3 @@ bolt-disable-proc-check.diff
 #cmake-issue-126358.diff
 lower-flang-py-dep.diff
 revert-issue-139220.diff
-unbreak-arhmf.patch
-ubuntu-resolute.patch
-fix-crash-ghc-arm.patch
-
-# only apply this patch for Ubuntu 25.10 or newer
-#ubuntu-clang-use-RVA23U64-profile.patch

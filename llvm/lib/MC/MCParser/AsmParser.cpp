@@ -1222,8 +1222,8 @@ bool AsmParser::parsePrimaryExpr(const MCExpr *&Res, SMLoc &EndLoc,
 
     MCSymbol *Sym = getContext().getInlineAsmLabel(SymbolName);
     if (!Sym)
-      Sym = getContext().parseSymbol(MAI.isHLASM() ? SymbolName.upper()
-                                                   : SymbolName);
+      Sym = getContext().getOrCreateSymbol(MAI.isHLASM() ? SymbolName.upper()
+                                                         : SymbolName);
 
     // If this is an absolute variable reference, substitute it now to preserve
     // semantics in the face of reassignment.
@@ -1854,7 +1854,7 @@ bool AsmParser::parseStatement(ParseStatementInfo &Info,
                                        RewrittenLabel);
         IDVal = RewrittenLabel;
       }
-      Sym = getContext().parseSymbol(IDVal);
+      Sym = getContext().getOrCreateSymbol(IDVal);
     } else
       Sym = Ctx.createDirectionalLocalSymbol(LocalLabelVal);
     // End of Labels should be treated as end of line for lexing
@@ -3897,14 +3897,19 @@ bool AsmParser::parseDirectiveCVLoc() {
 /// ::= .cv_linetable FunctionId, FnStart, FnEnd
 bool AsmParser::parseDirectiveCVLinetable() {
   int64_t FunctionId;
-  MCSymbol *FnStartSym, *FnEndSym;
+  StringRef FnStartName, FnEndName;
   SMLoc Loc = getTok().getLoc();
   if (parseCVFunctionId(FunctionId, ".cv_linetable") || parseComma() ||
       parseTokenLoc(Loc) ||
-      check(parseSymbol(FnStartSym), Loc, "expected identifier in directive") ||
+      check(parseIdentifier(FnStartName), Loc,
+            "expected identifier in directive") ||
       parseComma() || parseTokenLoc(Loc) ||
-      check(parseSymbol(FnEndSym), Loc, "expected identifier in directive"))
+      check(parseIdentifier(FnEndName), Loc,
+            "expected identifier in directive"))
     return true;
+
+  MCSymbol *FnStartSym = getContext().getOrCreateSymbol(FnStartName);
+  MCSymbol *FnEndSym = getContext().getOrCreateSymbol(FnEndName);
 
   getStreamer().emitCVLinetableDirective(FunctionId, FnStartSym, FnEndSym);
   return false;
@@ -3914,7 +3919,7 @@ bool AsmParser::parseDirectiveCVLinetable() {
 /// ::= .cv_inline_linetable PrimaryFunctionId FileId LineNum FnStart FnEnd
 bool AsmParser::parseDirectiveCVInlineLinetable() {
   int64_t PrimaryFunctionId, SourceFileId, SourceLineNum;
-  MCSymbol *FnStartSym, *FnEndSym;
+  StringRef FnStartName, FnEndName;
   SMLoc Loc = getTok().getLoc();
   if (parseCVFunctionId(PrimaryFunctionId, ".cv_inline_linetable") ||
       parseTokenLoc(Loc) ||
@@ -3924,14 +3929,16 @@ bool AsmParser::parseDirectiveCVInlineLinetable() {
       parseIntToken(SourceLineNum, "expected SourceLineNum") ||
       check(SourceLineNum < 0, Loc, "Line number less than zero") ||
       parseTokenLoc(Loc) ||
-      check(parseSymbol(FnStartSym), Loc, "expected identifier") ||
+      check(parseIdentifier(FnStartName), Loc, "expected identifier") ||
       parseTokenLoc(Loc) ||
-      check(parseSymbol(FnEndSym), Loc, "expected identifier"))
+      check(parseIdentifier(FnEndName), Loc, "expected identifier"))
     return true;
 
   if (parseEOL())
     return true;
 
+  MCSymbol *FnStartSym = getContext().getOrCreateSymbol(FnStartName);
+  MCSymbol *FnEndSym = getContext().getOrCreateSymbol(FnEndName);
   getStreamer().emitCVInlineLinetableDirective(PrimaryFunctionId, SourceFileId,
                                                SourceLineNum, FnStartSym,
                                                FnEndSym);
@@ -3952,14 +3959,16 @@ bool AsmParser::parseDirectiveCVDefRange() {
   std::vector<std::pair<const MCSymbol *, const MCSymbol *>> Ranges;
   while (getLexer().is(AsmToken::Identifier)) {
     Loc = getLexer().getLoc();
-    MCSymbol *GapStartSym;
-    if (parseSymbol(GapStartSym))
+    StringRef GapStartName;
+    if (parseIdentifier(GapStartName))
       return Error(Loc, "expected identifier in directive");
+    MCSymbol *GapStartSym = getContext().getOrCreateSymbol(GapStartName);
 
     Loc = getLexer().getLoc();
-    MCSymbol *GapEndSym;
-    if (parseSymbol(GapEndSym))
+    StringRef GapEndName;
+    if (parseIdentifier(GapEndName))
       return Error(Loc, "expected identifier in directive");
+    MCSymbol *GapEndSym = getContext().getOrCreateSymbol(GapEndName);
 
     Ranges.push_back({GapStartSym, GapEndSym});
   }
@@ -4096,11 +4105,12 @@ bool AsmParser::parseDirectiveCVFileChecksumOffset() {
 /// ::= .cv_fpo_data procsym
 bool AsmParser::parseDirectiveCVFPOData() {
   SMLoc DirLoc = getLexer().getLoc();
-  MCSymbol *ProcSym;
-  if (parseSymbol(ProcSym))
+  StringRef ProcName;
+  if (parseIdentifier(ProcName))
     return TokError("expected symbol name");
   if (parseEOL())
     return true;
+  MCSymbol *ProcSym = getContext().getOrCreateSymbol(ProcName);
   getStreamer().emitCVFPOData(ProcSym, DirLoc);
   return false;
 }
@@ -4319,11 +4329,14 @@ bool AsmParser::parseDirectiveCFIPersonalityOrLsda(bool IsPersonality) {
   if (Encoding == dwarf::DW_EH_PE_omit)
     return false;
 
-  MCSymbol *Sym;
+  StringRef Name;
   if (check(!isValidEncoding(Encoding), "unsupported encoding.") ||
       parseComma() ||
-      check(parseSymbol(Sym), "expected identifier in directive") || parseEOL())
+      check(parseIdentifier(Name), "expected identifier in directive") ||
+      parseEOL())
     return true;
+
+  MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
 
   if (IsPersonality)
     getStreamer().emitCFIPersonality(Sym, Encoding);
@@ -4953,7 +4966,7 @@ bool AsmParser::parseDirectiveSymbolAttribute(MCSymbolAttr Attr) {
     if (discardLTOSymbol(Name))
       return false;
 
-    MCSymbol *Sym = getContext().parseSymbol(Name);
+    MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
 
     // Assembler local symbols don't make any sense here, except for directives
     // that the symbol should be tagged.
@@ -4975,9 +4988,12 @@ bool AsmParser::parseDirectiveComm(bool IsLocal) {
     return true;
 
   SMLoc IDLoc = getLexer().getLoc();
-  MCSymbol *Sym;
-  if (parseSymbol(Sym))
+  StringRef Name;
+  if (parseIdentifier(Name))
     return TokError("expected identifier in directive");
+
+  // Handle the identifier as the key symbol.
+  MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
 
   if (parseComma())
     return true;
@@ -5811,9 +5827,10 @@ bool AsmParser::parseDirectiveAddrsig() {
 }
 
 bool AsmParser::parseDirectiveAddrsigSym() {
-  MCSymbol *Sym;
-  if (check(parseSymbol(Sym), "expected identifier") || parseEOL())
+  StringRef Name;
+  if (check(parseIdentifier(Name), "expected identifier") || parseEOL())
     return true;
+  MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
   getStreamer().emitAddrsigSym(Sym);
   return false;
 }
@@ -6213,7 +6230,7 @@ bool HLASMAsmParser::parseAsHLASMLabel(ParseStatementInfo &Info,
     return Error(LabelLoc,
                  "Cannot have just a label for an HLASM inline asm statement");
 
-  MCSymbol *Sym = getContext().parseSymbol(
+  MCSymbol *Sym = getContext().getOrCreateSymbol(
       getContext().getAsmInfo()->isHLASM() ? LabelVal.upper() : LabelVal);
 
   // Emit the label.
@@ -6340,7 +6357,7 @@ bool parseAssignmentExpression(StringRef Name, bool allow_redef,
     Parser.getStreamer().emitValueToOffset(Value, 0, EqualLoc);
     return false;
   } else
-    Sym = Parser.getContext().parseSymbol(Name);
+    Sym = Parser.getContext().getOrCreateSymbol(Name);
 
   Sym->setRedefinable(allow_redef);
 

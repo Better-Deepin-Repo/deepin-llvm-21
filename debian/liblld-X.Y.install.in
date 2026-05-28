@@ -1,7 +1,7 @@
-#@LLVM_LIBDIR@/liblld-@LLVM_VERSION@.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
-@LLVM_LIBDIR@/liblldELF.a
-@LLVM_LIBDIR@/liblldMachO.a
-@LLVM_LIBDIR@/liblldCOFF.a
-@LLVM_LIBDIR@/liblldMinGW.a
-@LLVM_LIBDIR@/liblldCommon.a
-@LLVM_LIBDIR@/liblldWasm.a
+#usr/lib/llvm-@LLVM_VERSION@/lib/liblld-@LLVM_VERSION@.so.1 /usr/lib/@DEB_HOST_MULTIARCH@/
+usr/lib/llvm-@LLVM_VERSION@/lib/liblldELF.a
+usr/lib/llvm-@LLVM_VERSION@/lib/liblldMachO.a
+usr/lib/llvm-@LLVM_VERSION@/lib/liblldCOFF.a
+usr/lib/llvm-@LLVM_VERSION@/lib/liblldMinGW.a
+usr/lib/llvm-@LLVM_VERSION@/lib/liblldCommon.a
+usr/lib/llvm-@LLVM_VERSION@/lib/liblldWasm.a

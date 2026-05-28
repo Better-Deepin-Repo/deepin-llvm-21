@@ -1,15 +1,11 @@
 #!/usr/bin/dh-exec
 
-@LLVM_DIR@/bin/llvm-offload-device-info
-@LLVM_DIR@/bin/llvm-omp-kernel-replay
+[amd64 arm64 loong64 mips64el ppc64el ppc64 riscv64] usr/lib/llvm-@LLVM_VERSION@/bin/llvm-offload-device-info
+[amd64 arm64 loong64 mips64el ppc64el ppc64 riscv64] usr/lib/llvm-@LLVM_VERSION@/bin/llvm-omp-kernel-replay
 
-usr/bin/llvm-offload-device-info-@LLVM_VERSION@
-usr/bin/llvm-omp-kernel-replay-@LLVM_VERSION@
+[amd64 arm64 loong64 mips64el ppc64el ppc64 riscv64] usr/bin/llvm-offload-device-info-@LLVM_VERSION@
+[amd64 arm64 loong64 mips64el ppc64el ppc64 riscv64] usr/bin/llvm-omp-kernel-replay-@LLVM_VERSION@
 
-@LLVM_LIBDIR@/*/libompdevice.a
-@LLVM_LIBDIR@/*/libomptarget-*.bc
-@LLVM_LIBDIR@/libomptarget.so
-
-@LLVM_DIR@/include/offload/OffloadAPI.h
-@LLVM_DIR@/include/offload/OffloadPrint.hpp
-@LLVM_LIBDIR@/libLLVMOffload.so
+usr/lib/llvm-@LLVM_VERSION@/include/offload/OffloadAPI.h
+usr/lib/llvm-@LLVM_VERSION@/include/offload/OffloadPrint.hpp
+usr/lib/llvm-@LLVM_VERSION@/lib/libLLVMOffload.so

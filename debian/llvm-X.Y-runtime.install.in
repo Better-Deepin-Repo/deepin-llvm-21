@@ -1,5 +1,5 @@
-@LLVM_DIR@/bin/lli
-@LLVM_DIR@/bin/lli-child-target
+usr/lib/llvm-@LLVM_VERSION@/bin/lli
+usr/lib/llvm-@LLVM_VERSION@/bin/lli-child-target
 
 usr/bin/lli-@LLVM_VERSION@
 usr/bin/lli-child-target-@LLVM_VERSION@

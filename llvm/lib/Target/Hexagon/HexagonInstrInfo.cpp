@@ -2803,7 +2803,6 @@ bool HexagonInstrInfo::isValidOffset(unsigned Opcode, int Offset,
   case Hexagon::V6_vL32b_nt_cur_npred_ai:
   case Hexagon::V6_vL32b_nt_tmp_pred_ai:
   case Hexagon::V6_vL32b_nt_tmp_npred_ai:
-  case Hexagon::V6_vS32Ub_npred_ai:
   case Hexagon::V6_vgathermh_pseudo:
   case Hexagon::V6_vgathermw_pseudo:
   case Hexagon::V6_vgathermhw_pseudo:
