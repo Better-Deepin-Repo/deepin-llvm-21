@@ -310,7 +310,7 @@ endif
 
 ifneq (,$(filter $(DEB_HOST_ARCH),ppc64el))
   STAGE_ALL_CMAKE_EXTRA += -DLLVM_HOST_TRIPLE=powerpc64le-linux-gnu
-  ifeq (,$(filter $(DISTRO), stretch buster bullseye bookworm trixie xenial bionic focal jammy noble oracular plucky))
+  ifeq (,$(filter $(DISTRO), stretch buster bullseye bookworm trixie xenial bionic focal jammy noble oracular plucky crimson))
     STAGE_ALL_CMAKE_EXTRA += -DPPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON
   endif
 endif
