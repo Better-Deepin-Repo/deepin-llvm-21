@@ -68,9 +68,8 @@ int main(int argc, char *argv[]) {
   if (!JsonStatus.ok()) {
     clang::clangd::elog("Can not convert response ({0}) to JSON ({1}): {2}\n",
                         Response.DebugString(),
-                        (int)JsonStatus.code(),
+                        static_cast<int>(JsonStatus.code()),
                         JsonStatus.message().as_string());
-
     return -1;
   }
   llvm::outs() << Output;

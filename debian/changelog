@@ -1,3 +1,413 @@
+llvm-toolchain-21 (1:21.1.8-7) unstable; urgency=medium
+
+  * Regenerate test scripts.
+
+ -- Matthias Klose <doko@debian.org>  Sat, 21 Mar 2026 14:19:08 +0100
+
+llvm-toolchain-21 (1:21.1.8-6) unstable; urgency=medium
+
+  * d/rules: For Ubuntu, don't include i386 for CLANG_GRPC_ARCHS,
+    not built on i386.
+  * d/rules: Stop ignoring failure for dh_shlibdeps call.
+  * b/d/t/integration-test-suite-test.in: Use the installed lit binary.
+
+ -- Matthias Klose <doko@debian.org>  Wed, 18 Mar 2026 14:39:22 +0100
+
+llvm-toolchain-21 (1:21.1.8-5) unstable; urgency=medium
+
+  [ Emanuele Rocca ]
+  * d/rules: fix armhf build failure due to typo. Closes: #1129213.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 03 Mar 2026 09:26:33 +0100
+
+llvm-toolchain-21 (1:21.1.8-4) unstable; urgency=medium
+
+  [ Matthias Klose ]
+  * d/rules: Fix self-referencing macro.
+  * Stop building packages now built by LLVM 22.
+  * d/rules: Don't use lld for backport build, when not available.
+  * d/rules: Add safety check for enablement of the RVA23 baseline.
+  * d/rules: Only disable Z3 support for Ubuntu when it is in main.
+  * Install a lit binary. Closes: #1122910.
+  * llvm-tools: Don't install the lit tests. Closes: #1122909.
+
+  [ Sylvestre Ledru ]
+  * Fix autopkgtest failure with CMake 4. thanks to Adrian Bunk
+
+ -- Matthias Klose <doko@debian.org>  Fri, 27 Feb 2026 17:29:38 +0100
+
+llvm-toolchain-21 (1:21.1.8-3) unstable; urgency=medium
+
+  [ Matthias Klose ]
+  * d/llvm-X.Y-tools.bcep.in: Fix Python 3.14 byte compilation by adding
+    an exception for shtest-encoding.py test file containing non-UTF-8
+    characters (Igor Luppi). Closes: #1125352. LP: #2138890.
+  * Enable libunwind on s390x (Michael R. Crusoe). Closes: #1126263.
+
+  [ Fabian Grünbichler ]
+  * d/rules: Work around cmake 4.x compat issue. Closes: #1125733.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 03 Feb 2026 12:25:57 +0100
+
+llvm-toolchain-21 (1:21.1.8-2) unstable; urgency=medium
+
+  * Stop building multilibs on s390x. Closes: #1125253.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 20 Jan 2026 05:14:27 +0100
+
+llvm-toolchain-21 (1:21.1.8-1) unstable; urgency=medium
+
+  [ Matthias Klose ]
+  * Enable offloading on riscv64 (Aurelian Jarno).
+  * Manually fix the python3 shebangs. dh_python3 can only handle one
+    private directory. Also install lit first in the dh_override_install
+    target, fix it there, and move it to the package from there.
+  * Add build conflicts on llvm-21-runtime and clang-21, or else the
+    wasm build picks up stuff from the installed llvm-21 and fails.
+  * Update symbols files again.
+
+  [ Sylvestre Ledru ]
+  * New upstream release
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 16 Dec 2025 12:47:30 +0100
+
+llvm-toolchain-21 (1:21.1.7-1) unstable; urgency=medium
+
+  * LLVM 21.1.7 release.
+
+  * Update symbols files for hurd-amd64.
+  * clang-21-tools, llvm-21-tools: Use dh_python3 substvars.
+  * liblldb-21: Move the .so symlink to the liblldb-21-dev package.
+  * Add myself as uploader for 21.
+  * d/rules: Remove unnecessary use of the CURDIR macro.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 09 Dec 2025 22:34:57 +0100
+
+llvm-toolchain-21 (1:21.1.6-3) unstable; urgency=medium
+
+  * Fix liborc install on hurd-amd64.
+  * Also call dh_python for the llvm-X.Y-tools package.
+  * libunwind-X.Y-dev: Stop providing libunwind-dev. As updated in the
+    package description, the unwinder is incompatible with glibc.
+  * d/rules, d/*.{install,links,lintian-overrides}.in: Use a macro LLVM_LIBDIR.
+  * Fix one more libclang1 lintian override.
+  * Fix one more libc++-21-dev-wasm32 lintian override.
+  * Update symbols files from the buildd logs, including i386.
+  * Fix syntax for OR-ed build profiles.
+
+ -- Matthias Klose <doko@debian.org>  Sun, 30 Nov 2025 08:20:46 +0100
+
+llvm-toolchain-21 (1:21.1.6-2) unstable; urgency=medium
+
+  [ Samuel Thibault ]
+  * Enable compiler-rt and disable liborc on hurd-amd64.
+    (Closes: #1121222)
+
+  [ Sylvestre Ledru ]
+  * Enable sse2 back on i386 (closes: #1116636)
+    https://lists.debian.org/debian-devel/2025/01/msg00034.html
+    (remove the two patches that we are applying for disable sse2)
+    It is now the same as upstream
+
+ -- Samuel Thibault <sthibault@debian.org>  Sun, 23 Nov 2025 14:28:16 +0100
+
+llvm-toolchain-21 (1:21.1.6-1) unstable; urgency=medium
+
+  * LLVM 21.1.6 release.
+
+  [ Sylvestre Ledru ]
+  * Workaround the replaces/breaks on apt.llvm.org (upstream 167538)
+
+  [ Matthias Klose ]
+  * Only run the flang autopkg tests where flang is available.
+  * Rename the LIBC_ARCHS macro to LLVM_LIBC_ARCHS, and only run the
+    libllvmlibc autopkg tests where the package is available.
+  * Skip the "Test pthread_cancel with libunwind compatibility" autopkg test.
+    Is this supposed to work at all?  See #1118641.
+  * Fix removing *.pyc files and __pycache__ dirs during installation.
+  * Fix some lintian warnings, override some more.
+  * Update symbols files from the buildd logs.
+
+  [ Scott Talbert ]
+  * Fix crash when building GHC 9.10 on armhf
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 21 Nov 2025 15:09:31 +0100
+
+llvm-toolchain-21 (1:21.1.5-1) unstable; urgency=medium
+
+  [ Matthias Klose ]
+  * New upstream release
+  * d/rules: Mark usage of SLOPPY_BUILD to ease searching in the build log.
+  * Update watch file, use with --force-download to fetch the integration
+    testsuite.
+  * Bump llvm-spirv build dependency to 21 again.
+  * Introduce an OMPD_ARCHS macro and use it.
+  * Add a llvm.noclang build profile (not enabled by default).
+  * Introduce LLVM_SPIRV_ARCHS and CLANG_GRPC_ARCHS macros and use them.
+  * Bump standards version.
+  * Also use the grpc bits for clang on i386.
+  * Don't run the omp autopkg test on i386. Closes: #1118644.
+  * d/tests/control.in: Add test dependency on g++-multilib. Closes: #1118643.
+  * d/debian-llvm-testsuite.bats: Skip test. Closes: #1118641.
+    The test "pthread_cancel with libunwind compatibility" is wrong.
+  * d/tests/control.in: Add test dependency on binutils-gold. Closes: #1118646.
+  * Build and install libflang_rt.runtime. Closes: #1117534.
+  * Add the alternate hello b-d for grpc related build dependencies.
+  * Add profile to ocaml build dependencies.
+  * Re(?)-enable omp on i386.
+  * d/control: Only use one build profile per binary package for now. The ORing
+    of build profiles seems to be not working.
+  * Rename build profiles from llvm.* to pkg.llvm.*.
+  * Fix some lintian warnings, override some more.
+  * Filter hardening flags from FFLAGS, not understood by flang.
+  * Clarify the libunwind package descriptions, that it is not compatible
+    with glibc.
+  * Re-add the negative hardening options for the FFLAGS filtering, removed in
+    the "improve the filtering" commit.
+
+  [ Sylvestre Ledru ]
+  * Rename 160581.diff to flang-runtime.diff
+  * Remove duplicate coverity declaration
+  * Remove duplicate buster in SPIRV_DISABLE_DISTRO
+  * RUNTIMES = compiler-rt;libcxx;libcxxabi is set identically in both branches
+    of a conditional -
+  * Rename ign_fail => ignore_if_fail
+  * create a macro check_pkg_version to simplify the code
+  * Remove a 19 artifact
+  * Use a macro to dedup remove_rpath code
+  * Fix typo in control
+  * Rename ign_fail => ignore_if_fail
+  * README: remove the svn doc
+  * Missing Shebang in unpack.sh
+  * Remove dup declarations in llvm-X.Y
+    obj2yaml, yaml2obj, verify-uselistorder & sanstats
+  * Remove old TODO
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 10 Nov 2025 21:21:05 +0100
+
+llvm-toolchain-21 (1:21.1.4-8) unstable; urgency=medium
+
+  * d/rules: Move OMP_ARCHS and LIBUNWIND_ARCHS macro usage after definition.
+  * ompd is not available on armhf.
+  * d/rules: Also turn on SLOPPY_BUILD for amd64.
+
+ -- Matthias Klose <doko@debian.org>  Wed, 05 Nov 2025 12:41:59 +0100
+
+llvm-toolchain-21 (1:21.1.4-7) unstable; urgency=medium
+
+  * Fix installation of the asan_symbolize binary.
+  * Rename the python extension ompdModule.so to one with the
+    architecture specific extension.
+  * d/rules, d/*.{install,links,lintian-overrides}.in: Use a macro LLVM_DIR.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 04 Nov 2025 22:12:56 +0100
+
+llvm-toolchain-21 (1:21.1.4-6) unstable; urgency=medium
+
+  * Add support to disable the OCAML build for specific releases.
+  * Set explicit architecture list for libfuzzer-dev.
+  * d/rules: New macro SLOPPY_BUILD to avoid build failures caused by
+    additional build artifacts or missing symbols.  Better to collect
+    that information in build logs and apply it in follow-up uploads.
+    Turn it on for architectures other than amd64 and arm64 for now.
+  * Make the library packages libc++1, libc++abi1, libomp5 and llvm-libunwind1
+    M-A: same, moving the real files to /usr/lib/<multiarch>.  Provide the
+    symlinks in /usr/lib/llvm-X.Y/lib in the correspinding -dev packages.
+    Addresses: #1116212.
+  * Revert parts of the SKIP_COMMON_PACKAGES changes, the move of the files
+    to another package and the breaks/replaces are not needed anymore.
+  * Update libomp5 symbols for ppc64 and ppc64el.
+  * d/rules: Use POLLY_ARCHS instead of POLLY_NO_ARCHS.
+  * Factor out BOLT_ARCHS and HWASAN_ARCHS.
+  * When not building the common packages,
+    - Remove the files in these packages according to their .install file.
+    - Add a build dependency on the libllvm<next version> package.
+  * d/rules: Don't remove the intermediate build files. This increases
+    the build form 15GB to 35GB, far lower than the 100GB buildd limit.
+  * llvm-X.Y-dev: Create a debian_config.mk Makefile snippet to record
+    component builds for every architecture.  Used by llvm-defaults to
+    avoid hard-coding these again.
+  * Reset the libomp5 symbols files, now generated by pkgkde-symbolshelper.
+    Let the buildds collect the symbols for the other architectures.
+  * Fix build dependencies when not building the common library packages.
+  * d/rules: Differentiate between COMMON_PKGS and COMMON_BUILD_DEPS.
+  * d/rules: Build again omp on mips64el and ppc64, as done in 19.
+  * Install asan_symbolize in clang-tools, same as hwasan_sybolize.
+  * Update libc++1 and libc++abi1 symbols files for all architectures.
+  * d/rules: Use a d/shlibs.local file when not building the common libraries.
+  * Fix installation of the asan_symbolize binary.
+  * Rename the python extension ompdModule.so to one with the
+    architecture specific extension.
+  * d/rules, d/*.{install,links,lintian-overrides}.in: Use a macro LLVM_DIR.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 04 Nov 2025 18:00:30 +0100
+
+llvm-toolchain-21 (1:21.1.4-5) unstable; urgency=medium
+
+  * debian/debian-llvm-testsuite.bats: Reformat and sort LIST.
+  * Move libomptarget library from libomp5 to liboffload-X.Y.
+  * d/rules: Don't call dh_makeshlibs for libomp5 twice.
+  * d/rules: Ignore errors from dh_makeshlibs --remaining-packages.
+    Let's collect symbols diffs first.
+  * Update symbols files for libc++1, libc++abi1, libomp5 and
+    llvm-libunwind1 on amd64, arm64, armhf, i386, ppc64el and s390x.
+  * Reset the libc++1 and libc++abi1 symbols files, generated by
+    pkgkde-symbolshelper.  Let the buildds collect the symbols
+    for the other architectures.
+  * d/rules: Build with dh_install --list-missing to collect uninstalled
+    artifacts on other architectures.
+
+ -- Matthias Klose <doko@debian.org>  Wed, 29 Oct 2025 12:29:06 +0100
+
+llvm-toolchain-21 (1:21.1.4-4) unstable; urgency=medium
+
+  [ Matthias Klose ]
+  * Introduce the Ubuntu Resolute distro, remove obsolete Plucky patch.
+  * d/rules: Add alpha to BINUTILS_ARCHS.
+  * Always build the LLVMgold plugin, independent of the linker used for
+    the build.
+  * Define -DPPC_LINUX_DEFAULT_IEEELONGDOUBLE=ON on all architectures for correct
+    cross compilers. Except on powerpc and ppc64, where it thinks it has this
+    feature also on the host.
+  * d/rules: Fix $ expansion in dpkg-query call.
+  * d/rules: Factor out LIBUNWIND_ARCHS macro.
+  * libomptarget is not built on ppc64.
+  * Limit architecture of binary packages to the ones supported by LLVM.
+  * d/libomp-X.Y-dev.install.in, d/libomp5-X.Y.install.in: Use OFFLOAD_ARCHS.
+  * d/rules: Make grep a bit more quiet.
+  * d/control*: Remove ${t64:Provides}.
+  * Add patch to useRVA23U64 baseline on riscv64. Not applied by default.
+  * python3-lldb-X.Y: Remove some dangling symlinks and use dh-python
+    to create proper dependencies for the package. Addresses: #1106112.
+  * d/p/protobuf_3.21.patch: Remove obsolete patch. Addresses: #1093963.
+  * Remove obsolete build dependencies libjsoncpp-dev and pkg-config.
+    Addresses: #1093961.
+  * Add command completion for the versioned clang binary. Addresses: #1109370.
+  * Rename libunwind1 to llvm-libunwind1, the namespace is already taken
+    by the libunwind source package.
+  * For the new llvm-libunwind1, libc++abi1 and libc++1 packages:
+    - Add symbols files.
+    - Add proper breaks/replaces for the previous packages built from
+      this source.
+    - Relax the dependency from the corresponding -dev packages
+      from = to >=, needed when these new packages will be built from
+      newer LLVM versions.
+    - These should be Multi-Arch: same, but it is not yet possible,
+      because these also exist in /usr/lib/llvm-21/lib ...
+  * Bump the debhelper dependency to 11, d/compat was already at 11.
+  * clang-tools: Install hwasan_symbolize on x32.
+  * Drop major version from libomp5-21, rename to libomp5.
+  * Build polly again on powerpc.
+  * Also call dh_python3 for python3-clang-X.Y.
+  * d/rules: New macro SMALL_DISK to remove intermediate files during the build.
+    Turned on by default for buildd constraints.
+  * d/rules: Fix stripping RPATH/RUNPATH.
+  * Fix the binary-indep only build.
+  * Introduce a macro SKIP_COMMON_PACKAGES to disable the build of packages
+    built from an newer LLVM version (libc++1, libc++abi1, libomp5,
+    llvm-libunwind1).
+    When not building these packages, move the links in /usr/lib/llvm-X.Y/lib
+    into the corresponding -dev packages and add a replaces to the last version
+    building the common packages.
+  * d/rules: Add dependencies for various build targets. Addresses: #1105541.
+  * d/debian-llvm-testsuite.bats: Update for new package names.
+  * Fix libPolly installation on powerpc.
+
+  [ Andres Salomon ]
+  * Drop major version from libc++1-21, libc++abi1-21, and libunwind-21
+    package names (eg, libc++1-21 -> libc++1). Upstream guarantees a stable
+    ABI.
+  * Add SONAME to libunwind (-> libunwind1) (closes: #1116211)
+
+  [ Norbert Lange ]
+  * Move clang-cl and clang-scan-deps from clang-tools to the clang package.
+  * Build compiler-rt for mingw-w64.
+
+ -- Matthias Klose <doko@debian.org>  Tue, 28 Oct 2025 21:24:45 +0100
+
+llvm-toolchain-21 (1:21.1.4-3) unstable; urgency=medium
+
+  * Stop using gold, and use the GNU BFD linker where lld is not working.
+  * Set the baseline for Ubuntu/s390x 26.04 LTS and later to z15.
+  * d/rules: Remove unused macro LLDB_ENABLE.
+  * Turn off offloading on ppc64 and hurd-amd64. Unsupported.
+  * d/rules: Don't turn off COMPILER_RT_USE_BUILTINS_LIBRARY and
+    LIBCXX_USE_COMPILER_RT on s390x. Closes: #1114980.
+  * Diffentiate between LLD_ARCHS and LLD_BUILD_ARCHS. On some architectures
+    lld is not usable for the bootstrap.
+  * Try to turn off compiler-rt on hurd-amd64.
+  * d/libclang1-X.Y.symbols.in: Add LLVM_21 symbol version, remove specific
+    symbols covered by the added symbol version.
+  * Fix usage-wrapper usage on hurd-amd64.
+  * Update symbols files for libc++1, libc++abi1 and llvm-libunwind1.
+
+ -- Matthias Klose <doko@debian.org>  Thu, 23 Oct 2025 10:50:08 +0200
+
+llvm-toolchain-21 (1:21.1.4-2) unstable; urgency=medium
+
+  * Rename debian-llvm-testsuite.sh => debian-llvm-testsuite.bats
+    And don't call it with bash
+    It is a bats script
+    (Closes: #1118487)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 22 Oct 2025 09:53:11 +0200
+
+llvm-toolchain-21 (1:21.1.4-1) unstable; urgency=medium
+
+  * new upstream release
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 21 Oct 2025 11:03:29 +0200
+
+llvm-toolchain-21 (1:21.1.3-1) unstable; urgency=medium
+
+  * new upstream release
+  * refresh the list of the symbols in libclang & libomp (Closes: #1117600)
+  * Do not test gold usage anymore. lld or mold are now much better
+    (Closes: #1117385)
+  * Reame qualify-clang.sh to debian-llvm-testsuite.sh as it is now doing
+    much more
+  * adjust debian-llvm-testsuite.sh to use lld instead of gold
+    and debian/tests/integration-test-suite-test
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 12 Oct 2025 17:16:05 +0200
+
+llvm-toolchain-21 (1:21.1.2-4) unstable; urgency=medium
+
+  [ Sylvestre Ledru ]
+  * Cherry-pick 149665 to fix an armhf time64_t failure
+    Thanks to Gianfranco Costamagna for the patch
+
+  [ Matthias Klose ]
+  * d/libclang-rt-X.Y-dev.install.in: liborc_rt* is not available on powerpc.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 07 Oct 2025 11:55:16 +0200
+
+llvm-toolchain-21 (1:21.1.2-3) unstable; urgency=medium
+
+  [ Sylvestre Ledru ]
+  * Also install xray on other archs in libclang-common-X.Y-dev
+    (change made in 20)
+
+  [ Samuel Thibault ]
+  * debian/patches/hurd/47211c4b96e99a3344a71570a99b991c5f5c1c01.patch: Fix
+    build on hurd.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Fri, 26 Sep 2025 18:23:56 +0200
+
+llvm-toolchain-21 (1:21.1.2-2) unstable; urgency=medium
+
+  * Bootstrap with llvm-spirv-19 instead of 21
+    (experimental and unstable build machines are different)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Thu, 25 Sep 2025 14:51:34 +0200
+
+llvm-toolchain-21 (1:21.1.2-1) unstable; urgency=medium
+
+  * Bump llvm-spirv dep to 21
+  * New upstream release
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Wed, 24 Sep 2025 08:09:15 +0200
+
 llvm-toolchain-21 (1:21.1.1-1) unstable; urgency=medium
 
   * New upstream release
@@ -2434,7 +2844,6 @@ llvm-toolchain-snapshot (1:14~++20220123085548+413684313d9d-1~exp1) experimental
   * Explicitly link against -latomic on hurd-i386 as well.
 
  -- Sylvestre Ledru <sylvestre@debian.org>  Sun, 23 Jan 2022 20:48:09 +0100
-
 
 llvm-toolchain-snapshot (1:14~++20220107114130+3a604fdbcd5f-1~exp1) experimental; urgency=medium
 

@@ -1,16 +1,16 @@
 #!/usr/bin/dh-exec
 
-usr/lib/llvm-@LLVM_VERSION@/lib/libLLVM*.a
-#usr/lib/llvm-@LLVM_VERSION@/lib/libllvm*.a
-usr/lib/llvm-@LLVM_VERSION@/lib/libLLVM.so
-usr/lib/llvm-@LLVM_VERSION@/lib/libLLVM-@LLVM_VERSION@*.so
-usr/lib/llvm-@LLVM_VERSION@/lib/libLTO.so
-usr/lib/llvm-@LLVM_VERSION@/lib/libRemarks.*
-usr/lib/llvm-@LLVM_VERSION@/include/llvm/      usr/include/llvm-@LLVM_VERSION@/
-usr/lib/llvm-@LLVM_VERSION@/include/llvm-c/	usr/include/llvm-c-@LLVM_VERSION@/
+@LLVM_LIBDIR@/libLLVM*.a
+#@LLVM_LIBDIR@/libllvm*.a
+@LLVM_LIBDIR@/libLLVM.so
+@LLVM_LIBDIR@/libLLVM-@LLVM_VERSION@*.so
+@LLVM_LIBDIR@/libLTO.so
+@LLVM_LIBDIR@/libRemarks.*
+@LLVM_DIR@/include/llvm/      usr/include/llvm-@LLVM_VERSION@/
+@LLVM_DIR@/include/llvm-c/	usr/include/llvm-c-@LLVM_VERSION@/
 # Explicit debian/tmp since there are multiple declarations
-debian/tmp/usr/lib/llvm-@LLVM_VERSION@/lib/cmake/llvm/*.cmake
-debian/tmp/usr/lib/llvm-@LLVM_VERSION@/lib/cmake/llvm/llvm-driver-template.cpp.in
+debian/tmp/@LLVM_LIBDIR@/cmake/llvm/*.cmake
+debian/tmp/@LLVM_LIBDIR@/cmake/llvm/llvm-driver-template.cpp.in
 
 llvm/utils/vim/indent/llvm-@LLVM_VERSION@.vim		        usr/share/vim/addons/indent/
 

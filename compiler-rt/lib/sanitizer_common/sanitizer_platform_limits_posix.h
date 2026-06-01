@@ -478,6 +478,30 @@ struct __sanitizer_cmsghdr {
   int cmsg_level;
   int cmsg_type;
 };
+#  elif SANITIZER_MUSL
+struct __sanitizer_msghdr {
+  void *msg_name;
+  unsigned msg_namelen;
+  struct __sanitizer_iovec *msg_iov;
+  int msg_iovlen;
+#    if SANITIZER_WORDSIZE == 64
+  int __pad1;
+#    endif
+  void *msg_control;
+  unsigned msg_controllen;
+#    if SANITIZER_WORDSIZE == 64
+  int __pad2;
+#    endif
+  int msg_flags;
+};
+struct __sanitizer_cmsghdr {
+  unsigned cmsg_len;
+#    if SANITIZER_WORDSIZE == 64
+  int __pad1;
+#    endif
+  int cmsg_level;
+  int cmsg_type;
+};
 #  else
 // In POSIX, int msg_iovlen; socklen_t msg_controllen; socklen_t cmsg_len; but
 // many implementations don't conform to the standard.
@@ -605,7 +629,7 @@ typedef unsigned long __sanitizer_sigset_t;
 #  elif SANITIZER_APPLE
 typedef unsigned __sanitizer_sigset_t;
 #  elif SANITIZER_HAIKU
-typedef unsigned long __sanitizer_sigset_t;
+typedef unsigned long long __sanitizer_sigset_t;
 #  elif SANITIZER_LINUX
 struct __sanitizer_sigset_t {
   // The size is determined by looking at sizeof of real sigset_t on linux.

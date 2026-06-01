@@ -1,15 +1,17 @@
 #!/usr/bin/dh-exec
 
-/usr/lib/llvm-@LLVM_VERSION@/lib/clang/@LLVM_VERSION@/include/omp*.h
-/usr/lib/llvm-@LLVM_VERSION@/lib/libgomp.so
-/usr/lib/llvm-@LLVM_VERSION@/lib/libiomp5.so
-/usr/lib/llvm-@LLVM_VERSION@/lib/libomp*.so
-[!armhf !mips64el] /usr/lib/llvm-@LLVM_VERSION@/lib/libarcher_static.a
-[!armhf !mips64el] /usr/lib/llvm-@LLVM_VERSION@/lib/libarcher.so
+/@LLVM_LIBDIR@/libomp.so   usr/lib/@DEB_HOST_MULTIARCH@/
+/@LLVM_LIBDIR@/libiomp5.so usr/lib/@DEB_HOST_MULTIARCH@/
+# Rationale for these two?
+/@LLVM_LIBDIR@/libgomp.so.1
+/@LLVM_LIBDIR@/libgomp.so
 
-[amd64 hurd-amd64 ppc64el arm64 ppc64 loong64] usr/lib/llvm-@LLVM_VERSION@/lib/*/libompdevice.a
-[amd64 hurd-amd64 ppc64el arm64 ppc64 loong64] usr/lib/llvm-@LLVM_VERSION@/lib/*/libomptarget-*.bc
+[@OMPD_ARCHS@] /@LLVM_LIBDIR@/libompd.so
 
-usr/lib/llvm-@LLVM_VERSION@/lib/cmake/openmp/*.cmake
+/@LLVM_LIBDIR@/clang/@LLVM_VERSION@/include/omp*.h
+[@OMPD_ARCHS@] /@LLVM_LIBDIR@/libarcher_static.a
+[@OMPD_ARCHS@] /@LLVM_LIBDIR@/libarcher.so
 
-[!armhf !hurd-amd64] usr/lib/llvm-@LLVM_VERSION@/share/gdb/python/ompd/
+@LLVM_LIBDIR@/cmake/openmp/*.cmake
+
+[@OMPD_ARCHS@] @LLVM_DIR@/share/gdb/python/ompd/

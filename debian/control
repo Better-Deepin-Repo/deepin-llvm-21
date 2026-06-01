@@ -3,40 +3,39 @@ Section: devel
 Priority: optional
 Rules-Requires-Root: no
 Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
-Uploaders: Sylvestre Ledru <sylvestre@debian.org>, Gianfranco Costamagna <locutusofborg@debian.org>
-Build-Depends: debhelper (>= 10.0), cmake, ninja-build,
-    chrpath, texinfo, sharutils,
+Uploaders: Sylvestre Ledru <sylvestre@debian.org>,
+ Gianfranco Costamagna <locutusofborg@debian.org>,
+ Matthias Klose <doko@debian.org>,
+Build-Depends: debhelper (>= 11.0), cmake, ninja-build,
+    chrpath, texinfo, sharutils, libc++1, libc++abi1, libomp5 [amd64 arm64 armhf i386 loong64 mips64el ppc64 ppc64el riscv64 hurd-amd64], llvm-libunwind1 [amd64 arm64 armhf i386 loong64 ppc64 ppc64el riscv64 s390x], libllvm22,
     libelf-dev,
     libffi-dev,
     lsb-release, patchutils, diffstat, xz-utils, python3-dev,
     libedit-dev, libncurses-dev, swig, python3-sphinx (>= 1.3.6),
-    binutils-dev, lld [amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x sparc m68k ppc64 sparc64 x32 riscv64 loong64] | binutils-gold [amd64 arm64 armhf i386 ppc64 ppc64el x32 s390x hurd-i386 hurd-amd64],
+    binutils-dev, lld [amd64 arm64 armel armhf i386 loong64 ppc64el riscv64 s390x],
     libxml2-dev,
-    libjsoncpp-dev, pkg-config,
     libipt-dev [amd64 i386],
     lcov, procps, help2man,
     zlib1g-dev, libzstd-dev,
-    g++-multilib [amd64 i386 mips64 mips64el mipsel powerpc ppc64 s390x sparc sparc64 x32] | hello [amd64 i386 mips64 mips64el mipsel powerpc ppc64 s390x sparc sparc64 x32],
+    g++-multilib [amd64 i386 mips64 mips64el mipsel powerpc ppc64 sparc sparc64 x32] | hello [amd64 i386 mips64 mips64el mipsel powerpc ppc64 sparc sparc64 x32],
     libjs-mathjax, python3-myst-parser | python3-recommonmark, python3-pexpect,
     doxygen, time,
-    ocaml-base [amd64 arm64 ppc64el riscv64 s390x] | ocaml-nox [amd64 arm64 ppc64el riscv64 s390x],
-    ocaml-findlib [amd64 arm64 ppc64el riscv64 s390x],
-    libctypes-ocaml-dev [amd64 arm64 ppc64el riscv64 s390x],
-    dh-exec, dh-ocaml [amd64 arm64 ppc64el riscv64 s390x],
-    libpfm4-dev [linux-any], python3-setuptools, libz3-dev [!sh4],
+    dh-exec, dh-python, ocaml-base [amd64 arm64 ppc64el riscv64 s390x] <!pkg.llvm.noocaml> | ocaml-nox [amd64 arm64 ppc64el riscv64 s390x] <!pkg.llvm.noocaml>, ocaml-findlib [amd64 arm64 ppc64el riscv64 s390x] <!pkg.llvm.noocaml>, libctypes-ocaml-dev [amd64 arm64 ppc64el riscv64 s390x] <!pkg.llvm.noocaml>, dh-ocaml [amd64 arm64 ppc64el riscv64 s390x] <!pkg.llvm.noocaml>,
+    libpfm4-dev [linux-any], python3-setuptools, libz3-dev [amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mipsel mips64el powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32],
 # "| hello" is for older buster/bionic distros without spirv support
 # We need to keep the constraints coherent between the two alternatives, otherwise
 # hello would get installed unexpectedly and prevent e.g. wasi-libc from getting pulled
-    llvm-spirv-19 [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
-    spirv-tools [linux-any] <!stage1> | hello [linux-any] <!stage1>,
+    llvm-spirv-21 [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
+    spirv-tools [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
     wasi-libc | hello,
+    mingw-w64-common,
     libcurl4-openssl-dev <!stage1> | libcurl-dev <!stage1>,
-    libgrpc++-dev [amd64 arm64 armel armhf mips64el mipsel ppc64 ppc64el powerpc riscv64 s390x] <!stage1>,
-    protobuf-compiler-grpc [amd64 arm64 armel armhf mips64el mipsel ppc64 ppc64el powerpc riscv64 s390x] <!stage1>,
-    libprotobuf-dev [amd64 arm64 armel armhf mips64el mipsel ppc64 ppc64el powerpc riscv64 s390x] <!stage1>,
-    protobuf-compiler [amd64 arm64 armel armhf mips64el mipsel ppc64 ppc64el powerpc riscv64 s390x] <!stage1>,
-Build-Conflicts: oprofile
-Standards-Version: 4.7.0
+    libgrpc++-dev [amd64 arm64 armel armhf i386 mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
+    protobuf-compiler-grpc [amd64 arm64 armel armhf i386 mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
+    libprotobuf-dev [amd64 arm64 armel armhf i386 mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
+    protobuf-compiler [amd64 arm64 armel armhf i386 mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x] <!stage1> | hello [amd64 arm64 armhf i386 ppc64 ppc64el riscv64 s390x] <!stage1>,
+Build-Conflicts: oprofile, llvm-21-runtime, clang-21
+Standards-Version: 4.7.2
 Homepage: https://www.llvm.org/
 Vcs-Git: https://salsa.debian.org/pkg-llvm-team/llvm-toolchain.git -b 21
 Vcs-Browser: https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/tree/21
@@ -44,7 +43,8 @@ Vcs-Browser: https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/tree/21
 # ------------- clang -------------
 
 Package: clang-21
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  ${dep:devlibs-objc},
  libllvm21 (= ${binary:Version}),
@@ -55,6 +55,8 @@ Provides: c-compiler, objc-compiler, c++-compiler, objc++-compiler
 Recommends: llvm-21-dev, python3, clang-tools-21
 # libomp-21-dev
 Suggests: clang-21-doc, wasi-libc
+Breaks: clang-tools-21 (<< 1:21.1.4-4)
+Replaces: clang-tools-21 (<< 1:21.1.4-4)
 Description: C, C++ and Objective-C compiler
  Clang project is a C, C++, Objective C and Objective C++ front-end
  based on the LLVM compiler. Its goal is to offer a replacement to the
@@ -64,9 +66,12 @@ Description: C, C++ and Objective-C compiler
  provides most of the support of C++20.
 
 Package: clang-tools-21
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, clang-21 (= ${binary:Version}),
- python3
+ python3:any, ${python3:Depends}
+Breaks: clang-21 (<< 1:21.1.4-6)
+Replaces: clang-21 (<< 1:21.1.4-6)
 Description: clang-based tools for C/C++ developments
  Clang project is a C, C++, Objective C and Objective C++ front-end
  based on the LLVM compiler. Its goal is to offer a replacement to the
@@ -75,10 +80,11 @@ Description: clang-based tools for C/C++ developments
  Clang implements all of the ISO C++ 1998, 11, 14 and 17 standards and also
  provides most of the support of C++20.
  .
- This package contains some clang-based tools like scan-build, clang-cl, etc.
+ This package contains some clang-based tools like scan-build, etc.
 
 Package: clang-format-21
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, python3,
  libllvm21 (= ${binary:Version})
 Description: Tool to format C/C++/Obj-C code
@@ -94,7 +100,8 @@ Description: Tool to format C/C++/Obj-C code
  This package also provides vim and emacs plugins.
 
 Package: clang-tidy-21
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, python3,
  libllvm21 (= ${binary:Version}),
  libclang-common-21-dev (= ${binary:Version}),
@@ -106,7 +113,8 @@ Description: clang-based C++ linter tool
  for writing new checks.
 
 Package: clangd-21
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends},
  libllvm21 (= ${binary:Version}),
  libclang-common-21-dev (= ${binary:Version}),
@@ -121,6 +129,7 @@ Description: Language server that provides IDE-like features to editors
  it can work with many editors through a plugin.
 
 Package: clang-21-doc
+Build-Profiles: <!pkg.llvm.noclang>
 Architecture: all
 Multi-Arch: foreign
 Section: doc
@@ -136,9 +145,9 @@ Description: C, C++ and Objective-C compiler - Documentation
  This package contains the documentation.
 
 Package: libclang1-21
-Provides: ${t64:Provides}
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libs
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Description: C interface to the Clang library
@@ -158,7 +167,8 @@ Description: C interface to the Clang library
  Clang-based development tools.
 
 Package: libclang-21-dev
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  ${dep:devlibs-objc}, libclang1-21 (= ${binary:Version}),
@@ -175,7 +185,8 @@ Description: Clang library - Development package
  libclang1-21.
 
 Package: libclang-common-21-dev
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Multi-Arch: same
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends},
@@ -193,8 +204,8 @@ Description: Clang library - Common development package
 # ------------- compiler-rt -------------
 
 Package: libclang-rt-21-dev
-Architecture: any
-Multi-Arch: same
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Compiler-rt - development package
@@ -209,6 +220,7 @@ Description: Compiler-rt - development package
    * profile - Library which is used to collect coverage information.
 
 Package: libclang-rt-21-dev-wasm32
+Build-Profiles: <!pkg.llvm.noclang>
 Architecture: all
 Multi-Arch: foreign
 Section: libdevel
@@ -217,6 +229,7 @@ Description: Compiler-rt - wasm32 builtins
  Provides the compiler-rt builtins for WebAssembly 32 bits
 
 Package: libclang-rt-21-dev-wasm64
+Build-Profiles: <!pkg.llvm.noclang>
 Architecture: all
 Multi-Arch: foreign
 Section: libdevel
@@ -224,11 +237,20 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Compiler-rt - wasm64 builtins
  Provides the compiler-rt builtins for WebAssembly 64 bits
 
+Package: libclang-rt-21-dev-win
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: all
+Multi-Arch: foreign
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Compiler-rt - Windows builtins
+ Provides the compiler-rt builtins for Windows
+
 # ------------- polly -------------
 
 Package: libpolly-21-dev
-Architecture: any
-Multi-Arch: same
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: High-level loop and data-locality optimizer
@@ -238,9 +260,9 @@ Description: High-level loop and data-locality optimizer
 # ------------- clang libraries -------------
 
 Package: libclang-cpp21
-Provides: ${t64:Provides}
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libs
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm21 (= ${binary:Version})
 Pre-Depends: ${misc:Pre-Depends}
 Description: C++ interface to the Clang library
@@ -260,7 +282,8 @@ Description: C++ interface to the Clang library
  Clang-based development tools.
 
 Package: libclang-cpp21-dev
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
  libclang-cpp21 (= ${binary:Version})
@@ -281,12 +304,13 @@ Description: C++ interface to the Clang library
  locations with elements within the AST, and other facilities that support
  Clang-based development tools.
  .
- This package contains symlinks without a version number, which needed by
+ This package contains symlinks without a version number, which are needed by
  linker at build time.
 
 
 Package: libfuzzer-21-dev
-Architecture: linux-any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, clang-21 (= ${binary:Version})
 Description: Library for coverage-guided fuzz testing
@@ -307,9 +331,10 @@ Description: Library for coverage-guided fuzz testing
 
 
 Package: python3-clang-21
+Build-Profiles: <!pkg.llvm.noclang>
 Section: python
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python3, libclang-21-dev
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}, libclang-21-dev
 Replaces: python-clang-x.y,
 Conflicts: python-clang-x.y
 Provides: python-clang-x.y
@@ -324,6 +349,7 @@ Description: Clang Python Bindings
  This binding package provides access to the Clang compiler and libraries.
 
 Package: clang-21-examples
+Build-Profiles: <!pkg.llvm.noclang>
 Architecture: all
 Multi-Arch: foreign
 Section: doc
@@ -341,8 +367,7 @@ Description: Clang examples
 # ------------- LLVM -------------
 
 Package: libllvm21
-Provides: ${t64:Provides}
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
@@ -355,7 +380,7 @@ Description: Modular compiler and toolchain technologies, runtime library
  This package contains the LLVM runtime library.
 
 Package: llvm-21-linker-tools
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Modular compiler and toolchain technologies - Plugins
  LLVM is a collection of libraries and tools that make it easy to build
@@ -365,7 +390,7 @@ Description: Modular compiler and toolchain technologies - Plugins
  This package contains the LLVMgold and LLVMPolly linker plugins.
 
 Package: llvm-21
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Suggests: llvm-21-doc
 Depends: llvm-21-runtime (= ${binary:Version}),
  llvm-21-linker-tools (= ${binary:Version}),
@@ -395,7 +420,7 @@ Description: Modular compiler and toolchain technologies
  generate code for X96, SparcV10, PowerPC or many other architectures.
 
 Package: llvm-21-runtime
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: binfmt-support | systemd
 Description: Modular compiler and toolchain technologies, IR interpreter
@@ -415,11 +440,11 @@ Description: Modular compiler and toolchain technologies, IR interpreter
  format.
 
 Package: llvm-21-dev
-Architecture: any
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, libffi-dev, ${misc:Depends},
  llvm-21 (= ${binary:Version}), libllvm21 (= ${binary:Version}), libncurses-dev,
  llvm-21-tools (= ${binary:Version}), libclang-cpp21 (= ${binary:Version}),
- libxml2-dev, libz3-dev [!sh4],
+ libxml2-dev, libz3-dev [amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mipsel mips64el powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32],
 Description: Modular compiler and toolchain technologies, libraries and headers
  LLVM is a collection of libraries and tools that make it easy to build
  compilers, optimizers, just-in-time code generators, and many other
@@ -437,9 +462,9 @@ Description: Modular compiler and toolchain technologies, libraries and headers
  using llvm.
 
 Package: llvm-21-tools
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python3,
- python3-pygments, python3-yaml,
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
+Depends: ${shlibs:Depends}, ${misc:Depends},
+ python3:any, ${python3:Depends}, python3-pygments, python3-yaml,
 # Because of yaml-bench
 Description: Modular compiler and toolchain technologies, tools
  LLVM is a collection of libraries and tools that make it easy to build
@@ -457,6 +482,7 @@ Description: Modular compiler and toolchain technologies, tools
  This package provides tools for testing.
 
 Package: libllvm-21-ocaml-dev
+Build-Profiles: <!pkg.llvm.noocaml>
 Section: ocaml
 Architecture: amd64 arm64 ppc64el riscv64 s390x
 Suggests: llvm-21-doc
@@ -523,8 +549,8 @@ Description: Modular compiler and toolchain technologies, examples
 # ------------- lld -------------
 
 Package: lld-21
-Architecture: amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x sparc m68k ppc64 sparc64 x32 riscv64 loong64
-# ia64 hurd powerpc have been removed
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolld>
+Architecture: amd64 arm64 armel armhf i386 loong64 m68k mips64el mipsel ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm21 (= ${binary:Version})
 Pre-Depends: ${misc:Pre-Depends}
 Description: LLVM-based linker
@@ -533,8 +559,8 @@ Description: LLVM-based linker
  Project.
 
 Package: liblld-21
-Architecture: amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x sparc m68k ppc64 sparc64 x32 riscv64 loong64
-# ia64 hurd powerpc have been removed
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolld>
+Architecture: amd64 arm64 armel armhf i386 loong64 m68k mips64el mipsel ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm21 (= ${binary:Version})
 Pre-Depends: ${misc:Pre-Depends}
 Section: libs
@@ -546,9 +572,9 @@ Description: LLVM-based linker, library
  This package contains the LLD runtime library.
 
 Package: liblld-21-dev
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolld>
 Section: libdevel
-Architecture: amd64 arm64 armel armhf i386 mipsel mips64el ppc64el s390x sparc m68k ppc64 sparc64 x32 riscv64 loong64
-# ia64 hurd powerpc have been removed
+Architecture: amd64 arm64 armel armhf i386 loong64 m68k mips64el mipsel ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, lld-21 (= ${binary:Version}),
  liblld-21 (= ${binary:Version}), libzstd-dev, zlib1g-dev
 Pre-Depends: ${misc:Pre-Depends}
@@ -563,6 +589,7 @@ Description: LLVM-based linker, header files
 # ------------- lldb -------------
 
 Package: lldb-21
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolldb>
 Architecture: amd64 arm64 armel armhf i386 loong64 m68k ppc64el riscv64 s390x x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm21 (= ${binary:Version}),
  python3-lldb-21
@@ -573,7 +600,7 @@ Description: Next generation, high-performance debugger
  Project, such as the Clang expression parser and LLVM disassembler.
 
 Package: liblldb-21
-Provides: ${t64:Provides}
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolldb>
 Architecture: amd64 arm64 armel armhf i386 loong64 m68k ppc64el riscv64 s390x x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, libllvm21 (= ${binary:Version})
 Pre-Depends: ${misc:Pre-Depends}
@@ -586,6 +613,7 @@ Description: Next generation, high-performance debugger, library
  This package contains the LLDB runtime library.
 
 Package: python3-lldb-21
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolldb>
 Section: python
 Architecture: amd64 arm64 armel armhf i386 loong64 m68k ppc64el riscv64 s390x x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python3:Depends}, liblldb-21 (= ${binary:Version})
@@ -601,10 +629,13 @@ Description: Next generation, high-performance debugger, python3 lib
  This binding package provides access to lldb.
 
 Package: liblldb-21-dev
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nolldb>
 Section: libdevel
 Architecture: amd64 arm64 armel armhf i386 loong64 m68k ppc64el riscv64 s390x x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, lldb-21 (= ${binary:Version})
 Pre-Depends: ${misc:Pre-Depends}
+Breaks: liblldb-21 (<< 1:21.1.7-1~)
+Replaces: liblldb-21 (<< 1:21.1.7-1~)
 Description: Next generation, high-performance debugger, header files
  LLDB is a next generation, high-performance debugger. It is built as a set of
  reusable components which highly leverage existing libraries in the larger LLVM
@@ -618,32 +649,22 @@ Description: Next generation, high-performance debugger, header files
 # managed in llvm-defaults
 
 Package: libomp-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
-Architecture: amd64 arm64 armhf loong64 ppc64 ppc64el hurd-amd64
-Depends: libomp5-21 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Architecture: amd64 arm64 armhf i386 loong64 mips64el ppc64 ppc64el riscv64 hurd-amd64
+Depends: libomp5 (>= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Suggests: libomp-21-doc
-Breaks: libiomp-dev (<< 3.7-1)
+Breaks: libomp-dev (<< 3.7-1), libomp5 (<< 1:21.1.4-6)
 Provides: libomp-x.y-dev
 Conflicts: libomp-x.y-dev
-Replaces: libomp-x.y-dev
+Replaces: libomp-x.y-dev, libomp5 (<< 1:21.1.4-6)
 Description: LLVM OpenMP runtime - dev package
  The runtime is the part of the OpenMP implementation that your code is
  linked against, and that manages the multiple threads in an OpenMP program
  while it is executing.
 
-Package: libomp5-21
-Multi-Arch: same
-Architecture: amd64 arm64 armhf loong64 ppc64 ppc64el hurd-amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Provides: ${t64:Provides}, libomp-x.y
-Conflicts: libomp-x.y
-Replaces: libomp-x.y
-Description: LLVM OpenMP runtime
- The runtime is the part of the OpenMP implementation that your code is
- linked against, and that manages the multiple threads in an OpenMP program
- while it is executing.
-
 Package: libomp-21-doc
+Build-Profiles: <!pkg.llvm.noclang>
 Section: doc
 Architecture: all
 Multi-Arch: foreign
@@ -661,25 +682,27 @@ Description: LLVM OpenMP runtime - Documentation
 
 
 Package: liboffload-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
-Architecture: amd64 arm64 loong64 ppc64 ppc64el hurd-amd64
+Architecture: amd64 arm64 loong64 ppc64el riscv64
 Depends: liboffload-21 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Provides: liboffload-x.y-dev
+Breaks: libomp5 (<< 1:21.1.4-5)
 Conflicts: liboffload-x.y-dev
-Replaces: liboffload-x.y-dev
+Replaces: liboffload-x.y-dev, libomp5 (<< 1:21.1.4-5)
 Description: Offload Library - Development Package
  The offload library facilitates efficient task distribution by offloading
  specific computational tasks from the CPU to alternative hardware accelerators
  such as GPUs or FPGAs.
  .
- This development package includes headers and other resources needed for building
- applications that utilize the offload runtime.
+ This development package includes headers and other resources needed for
+ building applications that utilize the offload runtime.
 
 Package: liboffload-21
-Multi-Arch: same
-Architecture: amd64 arm64 loong64 ppc64 ppc64el hurd-amd64
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 loong64 ppc64el riscv64
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Provides: ${t64:Provides}, liboffload-x.y
+Provides: liboffload-x.y
 Conflicts: liboffload-x.y
 Replaces: liboffload-x.y
 Description: Offload Library
@@ -689,38 +712,16 @@ Description: Offload Library
 
 # ------------- libcxx -------------
 
-Package: libc++1-21
-Section: libs
-Architecture: any
-Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: clang
-Provides: ${t64:Provides}, libc++-x.y
-Conflicts: libc++-x.y
-Replaces: libc++-x.y
-Description: LLVM C++ Standard library
- libc++ is another implementation of the C++ standard library.
- .
- Features and Goals
- .
-   * Correctness as defined by the C++ standards.
-   * Fast execution.
-   * Minimal memory use.
-   * Fast compile times.
-   * ABI compatibility with gcc's libstdc++ for some low-level features such
-     as exception objects, rtti and memory allocation.
-   * Extensive unit tests.
-
 Package: libc++-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
-Architecture: any
-Multi-Arch: same
-Depends: libc++1-21 (= ${binary:Version}), ${misc:Depends},
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
+Depends: libc++1 (>= ${binary:Version}), ${misc:Depends},
  libc++abi-21-dev (= ${binary:Version})
 Provides: libc++-x.y-dev
 Conflicts: libc++-x.y-dev
-Replaces: libc++-x.y-dev
+Breaks: libc++1 (<< 1:21.1.4-6)
+Replaces: libc++-x.y-dev, libc++1 (<< 1:21.1.4-6)
 Description: LLVM C++ Standard library (development files)
  libc++ is another implementation of the C++ standard library
  .
@@ -735,6 +736,7 @@ Description: LLVM C++ Standard library (development files)
    * Extensive unit tests.
 
 Package: libc++-21-dev-wasm32
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
 Architecture: all
 Multi-Arch: foreign
@@ -759,33 +761,15 @@ Description: LLVM C++ Standard library (WASI)
 
 # ------------- libcxxabi -------------
 
-Package: libc++abi1-21
-Section: libs
-Architecture: any
-Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Provides: ${t64:Provides}, libc++abi-x.y
-Conflicts: libc++abi-x.y
-Replaces: libc++abi-x.y
-Description: LLVM low level support for a standard C++ library
- libc++abi is another implementation of low level support for a standard C++
- library.
- .
- Features and Goals
- .
-   * Correctness as defined by the C++ standards.
-   * Provide a portable sublayer to ease the porting of libc++
-
 Package: libc++abi-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
-Architecture: any
-Multi-Arch: same
-Depends: libc++abi1-21 (= ${binary:Version}), ${misc:Depends}
-Breaks: libc++abi-dev (<= 44)
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
+Depends: libc++abi1 (>= ${binary:Version}), ${misc:Depends}
+Breaks: libc++abi-dev (<= 44), libc++abi1 (<< 1:21.1.4-6)
 Provides: libc++abi-x.y-dev
 Conflicts: libc++abi-x.y-dev
-Replaces: libc++abi-x.y-dev
+Replaces: libc++abi-x.y-dev, libc++abi1 (<< 1:21.1.4-6)
 Description: LLVM low level support for a standard C++ library (development files)
  libc++abi is another implementation of low level support for a standard C++
  library.
@@ -796,6 +780,7 @@ Description: LLVM low level support for a standard C++ library (development file
    * Provide a portable sublayer to ease the porting of libc++
 
 Package: libc++abi-21-dev-wasm32
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
 Architecture: all
 Multi-Arch: foreign
@@ -817,6 +802,7 @@ Description: LLVM low level support for a standard C++ library (WASI)
 # ------------- libclc -------------
 
 Package: libclc-21
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libs
 Architecture: all
 Multi-Arch: foreign
@@ -836,6 +822,7 @@ Description: OpenCL C language implementation - platform support
  platforms.
 
 Package: libclc-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
 Architecture: all
 Multi-Arch: foreign
@@ -853,36 +840,21 @@ Description: OpenCL C language implementation - development files
 
 # ------------- libunwind -------------
 
-Package: libunwind-21
-Section: libs
-Architecture: amd64 arm64 armhf i386 loong64 ppc64el ppc64 riscv64
-Multi-Arch: same
-Depends: ${shlibs:Depends},
- ${misc:Depends}
-Provides: ${t64:Provides}, libunwind-x.y
-Conflicts: libunwind-x.y
-Replaces: libunwind-x.y
-Description: production-quality unwinder
- libunwind is a production-quality unwinder, with platform support for DWARF
- unwind info, SjLj, and ARM EHABI.
- .
- The low level libunwind API was designed to work either in-process (aka local)
- or to operate on another process (aka remote), but only the local path has
- been implemented. Remote unwinding remains as future work.
-
 Package: libunwind-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
-Architecture: amd64 arm64 armhf i386 loong64 ppc64el ppc64 riscv64
-Multi-Arch: same
+Architecture: amd64 arm64 armhf i386 loong64 ppc64 ppc64el riscv64 s390x
 Depends:
  ${misc:Depends},
- libunwind-21 (= ${binary:Version})
-Provides: libunwind-dev, libunwind-x.y-dev
+ llvm-libunwind1 (>= ${binary:Version})
+Provides: libunwind-x.y-dev
 Conflicts: libunwind-dev, libunwind-x.y-dev
-Replaces: libunwind-dev, libunwind-x.y-dev
-Description: production-quality unwinder
- libunwind is a production-quality unwinder, with platform support for DWARF
- unwind info, SjLj, and ARM EHABI.
+Breaks: llvm-libunwind1 (<< 1:21.1.4-6)
+Replaces: libunwind-dev, libunwind-x.y-dev, llvm-libunwind1 (<< 1:21.1.4-6)
+Description: LLVM unwinder, not compatible with glibc
+ llvm-libunwind is the LLVM unwinder, with platform support for DWARF
+ unwind info, SjLj, and ARM EHABI.  Using it for packaging work inside
+ Debian is not recommended, incompatible with glibc.
  .
  The low level libunwind API was designed to work either in-process (aka local)
  or to operate on another process (aka remote), but only the local path has
@@ -891,7 +863,8 @@ Description: production-quality unwinder
 # ------------- mlir -------------
 
 Package: mlir-21-tools
-Architecture: any
+Build-Profiles: <!pkg.llvm.noclang>
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Multi-Level Intermediate Representation tools
  Novel approach to building reusable and extensible compiler infrastructure.
@@ -902,12 +875,12 @@ Description: Multi-Level Intermediate Representation tools
  This package provides tools.
 
 Package: libmlir-21
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libs
-Architecture: any
-Multi-Arch: same
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends: ${shlibs:Depends},
  ${misc:Depends}
-Provides: ${t64:Provides}, libmlir-x.y
+Provides: libmlir-x.y
 Conflicts: libmlir-x.y
 Replaces: libmlir-x.y
 Description: Multi-Level Intermediate Representation library
@@ -918,9 +891,9 @@ Description: Multi-Level Intermediate Representation library
 
 
 Package: libmlir-21-dev
+Build-Profiles: <!pkg.llvm.noclang>
 Section: libdevel
-Architecture: any
-Multi-Arch: same
+Architecture: amd64 arm64 armel armhf hurd-amd64 hurd-i386 i386 loong64 m68k mips64el mipsel powerpc ppc64 ppc64el riscv64 s390x sparc sparc64 x32
 Depends:
  ${misc:Depends},
  libmlir-21 (= ${binary:Version})
@@ -938,6 +911,7 @@ Description: Multi-Level Intermediate Representation library
 # ------------- bolt -------------
 
 Package: bolt-21
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nobolt>
 Architecture: amd64 arm64
 Depends: ${shlibs:Depends}, ${misc:Depends}, libbolt-21-dev (= ${binary:Version}),
 Pre-Depends: ${misc:Pre-Depends}
@@ -946,6 +920,7 @@ Description: Post-link optimizer
  execution profile gathered by sampling profiler.
 
 Package: libbolt-21-dev
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.nobolt>
 Section: libdevel
 Architecture: amd64 arm64
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -956,6 +931,7 @@ Description: Post-link optimizer
 # ------------- flang -------------
 
 Package: flang-21
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.noflang>
 # no 32bit support
 # https://github.com/llvm/llvm-project/issues/59845
 Architecture: amd64 arm64 ppc64el ppc64 sparc64 riscv64 loong64
@@ -969,6 +945,7 @@ Description: Fortran compiler
  of examples, some functionalities are still missing.
 
 Package: libflang-21-dev
+Build-Profiles: <!pkg.llvm.noclang !pkg.llvm.noflang>
 Architecture: amd64 arm64 ppc64el ppc64 sparc64 riscv64 loong64
 Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${dep:devlibs},
@@ -984,8 +961,10 @@ Description: Flang library - Development package
 # ------------- LLVM libc -------------
 
 Package: libllvmlibc-21-dev
-Section: libdevel
+Build-Profiles: <!pkg.llvm.noclang>
 Architecture: amd64 arm64 armhf
+Section: libdevel
+Depends: ${misc:Depends},
 Description: LLVM C Library - dev package
  Implementation of the C standard library targeting C17 and above.
  .

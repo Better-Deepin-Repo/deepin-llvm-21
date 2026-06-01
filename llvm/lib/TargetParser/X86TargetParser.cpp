@@ -59,7 +59,7 @@ constexpr FeatureBitset FeaturesPentium2 =
 constexpr FeatureBitset FeaturesPentium3 = FeaturesPentium2 | FeatureSSE;
 
 // Pentium 4 CPUs
-constexpr FeatureBitset FeaturesPentium4 = FeaturesPentium3;
+constexpr FeatureBitset FeaturesPentium4 = FeaturesPentium3 | FeatureSSE2;
 constexpr FeatureBitset FeaturesPrescott = FeaturesPentium4 | FeatureSSE3;
 constexpr FeatureBitset FeaturesNocona =
     FeaturesPrescott | Feature64BIT | FeatureCMPXCHG16B;
