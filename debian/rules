@@ -258,8 +258,8 @@ ifneq (,$(filter $(DEB_HOST_ARCH), $(FLANG_ARCHS)))
   FFLAGS := $(filter-out $(FLANG_UNKNOWN_OPTS), $(FFLAGS))
 endif
 
-# We use a stage2 build. It means that a first clang is built using gcc,
-# a second clang is built with the first
+# We use a stage2 build. It means that a first clang is built using the
+# bootstrap compiler, a second clang is built with the first
 # And the various components are built using the second clang.
 # See https://llvm.org/docs/AdvancedBuilds.html
 
@@ -267,6 +267,19 @@ endif
 CFLAGS_EXTRA = -Wno-unused-command-line-argument
 CXXFLAGS_EXTRA = -Wno-unused-command-line-argument
 LDFLAGS_EXTRA = -Wl,--build-id
+STAGE_1_LINKER_FLAGS =
+
+BOOTSTRAP_LLVM_VERSION ?= 19
+BOOTSTRAP_LLVM_BINDIR := /usr/bin
+BOOTSTRAP_CC := $(BOOTSTRAP_LLVM_BINDIR)/clang-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_CXX := $(BOOTSTRAP_LLVM_BINDIR)/clang++-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LD_LLD := $(BOOTSTRAP_LLVM_BINDIR)/ld.lld-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LLVM_AR := $(BOOTSTRAP_LLVM_BINDIR)/llvm-ar-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LLVM_RANLIB := $(BOOTSTRAP_LLVM_BINDIR)/llvm-ranlib-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LLVM_NM := $(BOOTSTRAP_LLVM_BINDIR)/llvm-nm-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LLVM_OBJDUMP := $(BOOTSTRAP_LLVM_BINDIR)/llvm-objdump-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LLVM_STRIP := $(BOOTSTRAP_LLVM_BINDIR)/llvm-strip-$(BOOTSTRAP_LLVM_VERSION)
+BOOTSTRAP_LLVM_READELF := $(BOOTSTRAP_LLVM_BINDIR)/llvm-readelf-$(BOOTSTRAP_LLVM_VERSION)
 
 # This will enable linking statically with large binaries like chromium.
 # For more details, see:
@@ -274,12 +287,13 @@ LDFLAGS_EXTRA = -Wl,--build-id
 ifeq (loong64,$(DEB_HOST_ARCH))
   CFLAGS_EXTRA += -mcmodel=medium
   CXXFLAGS_EXTRA += -mcmodel=medium
+  STAGE_1_LINKER_FLAGS += -fuse-ld=$(BOOTSTRAP_LD_LLD)
 endif
 
 # collect all flags for stage 1 toolchain build only
 STAGE_1_CFLAGS = $(CFLAGS) $(CFLAGS_EXTRA) $(CPPFLAGS)
 STAGE_1_CXXFLAGS = $(CXXFLAGS) $(CXXFLAGS_EXTRA) $(CPPFLAGS)
-STAGE_1_LDFLAGS = $(LDFLAGS) $(LDFLAGS_EXTRA)
+STAGE_1_LDFLAGS = $(LDFLAGS) $(LDFLAGS_EXTRA) $(STAGE_1_LINKER_FLAGS)
 # If we build with libc++, we might want to set different arguments for
 # stage 1 & runtimes
 RUNTIMES_CFLAGS = $(STAGE_1_CFLAGS)
@@ -298,8 +312,21 @@ STAGE_2_FORTRAN_OPT_FLAGS = $(call filter_flang_flags,$(opt_flags))
 STAGE_1_CMAKE_EXTRA =
 STAGE_2_CMAKE_EXTRA =
 STAGE_ALL_CMAKE_EXTRA =
+ifeq (loong64,$(DEB_HOST_ARCH))
+STAGE_1_CMAKE_EXTRA += -DCMAKE_C_COMPILER=$(BOOTSTRAP_CC)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_CXX_COMPILER=$(BOOTSTRAP_CXX)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_LINKER=$(BOOTSTRAP_LD_LLD)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_AR=$(BOOTSTRAP_LLVM_AR)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_RANLIB=$(BOOTSTRAP_LLVM_RANLIB)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_NM=$(BOOTSTRAP_LLVM_NM)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_OBJDUMP=$(BOOTSTRAP_LLVM_OBJDUMP)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_STRIP=$(BOOTSTRAP_LLVM_STRIP)
+STAGE_1_CMAKE_EXTRA += -DCMAKE_READELF=$(BOOTSTRAP_LLVM_READELF)
+STAGE_1_CMAKE_EXTRA += -DLLVM_USE_LINKER=$(BOOTSTRAP_LD_LLD)
+STAGE_1_CMAKE_EXTRA += -DCLANG_DEFAULT_LINKER=ld.lld-$(BOOTSTRAP_LLVM_VERSION)
+endif
 # toolchain config-only var combining all stage 1 cmake options
-CMAKE_EXTRA = $(STAGE_1_CMAKE_EXTRA) $(STAGE_ALL_CMAKE_EXTRA)
+CMAKE_EXTRA = $(STAGE_ALL_CMAKE_EXTRA) $(STAGE_1_CMAKE_EXTRA)
 # toolchain config-only var prepending BOOTSTRAP_ to all stage 2 cmake options
 BOOTSTRAP_CMAKE_EXTRA = $(foreach extra,$(STAGE_2_CMAKE_EXTRA) $(STAGE_ALL_CMAKE_EXTRA), $(subst -D,-DBOOTSTRAP_,$(extra)))
 
@@ -377,8 +404,15 @@ endif
 endif
 endif
 
+ifeq (loong64,$(DEB_HOST_ARCH))
+override CC := $(BOOTSTRAP_CC)
+override CXX := $(BOOTSTRAP_CXX)
+override LD := $(BOOTSTRAP_LD_LLD)
+export CC CXX LD
+else
 export CC ?= gcc-$(GCC_VERSION)
 export CXX ?= g++-$(GCC_VERSION)
+endif
 
 ifneq (,$(findstring $(DEB_HOST_ARCH),armel))
   STAGE_ALL_CMAKE_EXTRA += -DLLVM_HOST_TRIPLE=arm-linux-gnueabi
@@ -1068,7 +1102,7 @@ stamps/configure: stamps/preconfigure
 ifeq (${SCCACHE_ENABLE},yes)
 	ls -al $(SCCACHE_PATH)*
 endif
-	echo "Using gcc: "
+	echo "Using bootstrap compiler: "
 	$(CC) -v
 	$(CXX) -v
 	mkdir -p $(TARGET_BUILD)

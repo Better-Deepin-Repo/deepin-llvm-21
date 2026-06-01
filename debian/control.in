@@ -17,7 +17,7 @@ Build-Depends: debhelper (>= 11.0), cmake, ninja-build,
     libipt-dev [amd64 i386],
     lcov, procps, help2man,
     zlib1g-dev, libzstd-dev,
-    g++-multilib [@MULTILIB_ARCHS@]@BEGIN_OPTIONAL_HELLO@ | hello [@MULTILIB_ARCHS@]@END_OPTIONAL_HELLO@,
+    clang-19, llvm-19, lld-19,
     libjs-mathjax, python3-myst-parser | python3-recommonmark, python3-pexpect,
     doxygen,@USAGE_BUILD_DEP@
     dh-exec, dh-python, @OCAML_BUILD_DEPS@
